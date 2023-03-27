@@ -12,7 +12,7 @@ export default defineConfig({
         enabled: true,
       },
       manifest: {
-        name: 'Speedrun Timer App',
+        name: 'Speedrun Timer',
         short_name: 'STA',
         description: 'A highly customizable speedrun timer app',
         theme_color: '#ffffff',
