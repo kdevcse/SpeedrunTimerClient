@@ -1,92 +1,56 @@
 import { ref } from 'vue';
+import Worker from '../workers/timer?worker';
 
 export function useStopwatch() {
-  let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
-  let timer;
-  let paused = false;
-  let prevTime;
+  let worker;
 
-  const timerTxt = ref(getTimeFormatString());
+  const timerTxt = ref('00:00:00.000');
 
-  function setTimeValues(elapsedMilliseconds) {
-    milliseconds += elapsedMilliseconds;
-  
-    if (milliseconds >= 1000) {
-      seconds += (milliseconds - (milliseconds % 1000)) / 1000 ;
-      milliseconds = milliseconds % 1000;
-      if (seconds >= 60) {
-        minutes += (seconds - (seconds % 60)) / 60;
-        seconds = seconds % 60;
-        if (minutes >= 60) {
-          hours += (minutes - (minutes % 60)) / 60;
-          minutes = minutes % 60;
-        }
-      }
-    }
-  }
-  
-  function getTimeFormatString() {
-    const h = hours.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    const min = minutes.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    const s = seconds.toLocaleString('en-US', {
-      minimumIntegerDigits: 2,
-      useGrouping: false
-    });
-    const ms = milliseconds.toLocaleString('en-US', {
-      minimumIntegerDigits: 3,
-      useGrouping: false
-    });
-  
-    return `${h}:${min}:${s}.${ms}`;
-  }
-  
-  function incrementTimer() {
-    if (paused) {
+  function onTimerInit() {
+    if (worker) {
       return;
     }
-  
-    const elapsedMilliseconds = ((new Date()) - prevTime);
-    setTimeValues(elapsedMilliseconds);
-    timerTxt.value = getTimeFormatString();
-    prevTime = new Date();
+
+    worker = new Worker('/workers/timer.js');
+    worker.onmessage = (event) => {
+      timerTxt.value = event.data.timerTxt;
+    };
   }
   
   function onTimerStart() {
-    if (timer) {
-      return;
-    }
-  
-    paused = false;
-    prevTime = new Date();
-    timer = setInterval(incrementTimer, 10);
+    worker.postMessage({
+      command: 0
+    });
   }
   
   function onTimerStop() {
-    paused = true;
-    clearInterval(timer);
-    timer = null;
+    worker.postMessage({
+      command: 1
+    });
   }
   
   function onTimerReset() {
-    paused = true;
-    clearInterval(timer);
-    [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
-    paused = false;
-    timerTxt.value = getTimeFormatString();
-    timer = null;
+    worker.postMessage({
+      command: 2
+    });
+  }
+
+  function onTimerTeardown() {
+    if (!worker) {
+      return;
+    }
+
+    worker.terminate();
+    worker = undefined;
   }
 
   return {
     timerTxt,
     onTimerStart, 
     onTimerStop, 
-    onTimerReset 
+    onTimerReset,
+    onTimerInit,
+    onTimerTeardown
   };
 }
 

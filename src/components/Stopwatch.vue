@@ -1,12 +1,23 @@
 <script setup>
+import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 
 const {
   timerTxt,
   onTimerStart,
   onTimerStop,
-  onTimerReset
+  onTimerReset,
+  onTimerInit,
+  onTimerTeardown
 } = useStopwatch();
+
+onMounted(() => {
+  onTimerInit();
+});
+
+onUnmounted(() => {
+  onTimerTeardown();
+});
 
 </script>
 
