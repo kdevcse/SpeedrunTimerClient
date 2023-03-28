@@ -1,21 +1,13 @@
+import workerHelper from "../helpers/worker-helper";
+
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer;
 let paused = false;
 let prevTime;
 
-onmessage = function (event) {
-  switch(event.data.command) {
-    case 0:
-      timerStart();
-      break;
-    case 1:
-      timerStop();
-      break;
-    case 2:
-      timerReset();
-      break;
-  }
-}
+function init() {
+  workerHelper.setOnMessageFunc(onMessageFunc);
+};
 
 function incrementTimer() {
   if (paused) {
@@ -24,7 +16,7 @@ function incrementTimer() {
 
   const elapsedMilliseconds = ((new Date()) - prevTime);
   setTimeValues(elapsedMilliseconds);
-  postMessage({ 
+  workerHelper.postMessageToWorker({ 
     timerTxt: getTimeFormatString() 
   });
   prevTime = new Date();
@@ -47,7 +39,7 @@ function setTimeValues(elapsedMilliseconds) {
   }
 }
   
-function getTimeFormatString() {
+export function getTimeFormatString() {
   const h = hours.toLocaleString('en-US', {
     minimumIntegerDigits: 2,
     useGrouping: false
@@ -68,7 +60,21 @@ function getTimeFormatString() {
   return `${h}:${min}:${s}.${ms}`;
 }
 
-function timerStart() {
+export function onMessageFunc(event) {
+  switch(event.data.command) {
+    case 0:
+      timerStart();
+      break;
+    case 1:
+      timerStop();
+      break;
+    case 2:
+      timerReset();
+      break;
+  }
+}
+
+export function timerStart() {
   if (timer) {
     return;
   }
@@ -78,19 +84,21 @@ function timerStart() {
   timer = setInterval(incrementTimer, 10);
 }
 
-function timerStop() {
+export function timerStop() {
   paused = true;
   clearInterval(timer);
   timer = null;
 }
 
-function timerReset() {
+export function timerReset() {
   paused = true;
   clearInterval(timer);
   [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
   paused = false;
-  postMessage({ 
+  workerHelper.postMessageToWorker({ 
     timerTxt: getTimeFormatString() 
   });
   timer = null;
 }
+
+init();
