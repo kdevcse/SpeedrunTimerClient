@@ -22,29 +22,22 @@ function incrementTimer() {
   prevTime = new Date();
 }
 
+function setTimeValueHelper(prevVal, currVal, incrementor) {
+  if (prevVal < incrementor) {
+    return [ prevVal, currVal ];
+  }
+
+  currVal += (prevVal - (prevVal % incrementor)) / incrementor ;
+  prevVal = prevVal % incrementor;
+  return [ prevVal, currVal ];
+}
+
 function setTimeValues(elapsedMilliseconds) {
   milliseconds += elapsedMilliseconds;
 
-  if (milliseconds < 1000) {
-    return;
-  }
-
-  seconds += (milliseconds - (milliseconds % 1000)) / 1000 ;
-  milliseconds = milliseconds % 1000;
-
-  if (seconds < 60) {
-    return;
-  }
-
-  minutes += (seconds - (seconds % 60)) / 60;
-  seconds = seconds % 60;
-
-  if (minutes < 60) {
-    return;
-  }
-
-  hours += (minutes - (minutes % 60)) / 60;
-  minutes = minutes % 60;
+  [ milliseconds, seconds ] = setTimeValueHelper(milliseconds, seconds, 1000);
+  [ seconds, minutes ] = setTimeValueHelper(seconds, minutes, 60);
+  [ minutes, hours ] = setTimeValueHelper(minutes, hours, 60);
 }
   
 export function getTimeFormatString() {
