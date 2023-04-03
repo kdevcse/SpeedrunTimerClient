@@ -1,4 +1,4 @@
-import workerHelper, { WorkerCommands } from "../helpers/worker-helper";
+import { WorkerCommands, WorkerCommunicator } from "../helpers/worker-helper";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer;
@@ -6,7 +6,7 @@ let paused = false;
 let prevTime;
 
 function init() {
-  workerHelper.setOnMessageFunc(onMessageFunc);
+  WorkerCommunicator.setOnMessageFunc(onMessageFunc);
 };
 
 function incrementTimer() {
@@ -16,7 +16,7 @@ function incrementTimer() {
 
   const elapsedMilliseconds = ((new Date()) - prevTime);
   setTimeValues(elapsedMilliseconds);
-  workerHelper.postMessageToWorker({ 
+  WorkerCommunicator.postMessageToWorker({ 
     timerTxt: getTimeFormatString() 
   });
   prevTime = new Date();
@@ -96,7 +96,7 @@ export function timerReset() {
   clearInterval(timer);
   [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
   paused = false;
-  workerHelper.postMessageToWorker({ 
+  WorkerCommunicator.postMessageToWorker({ 
     timerTxt: getTimeFormatString() 
   });
   timer = null;

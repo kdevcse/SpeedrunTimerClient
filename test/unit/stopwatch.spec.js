@@ -1,11 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useStopwatch } from "../../src/composables/stopwatch";
 import { waitForTime } from "../helpers/time-helper";
-import WorkerHelper from "../../src/helpers/worker-helper";
+import  { WorkerCommunicator } from "../../src/helpers/worker-helper";
 import { onMessageFunc } from "../../src/workers/timer";
 
 vi.mock("../../src/helpers/worker-helper", () => ({
-  default: {
+  WorkerCommunicator: {
     postMessageToWorker: vi.fn(),
     setOnMessageFunc: vi.fn(),
   },
@@ -49,7 +49,7 @@ describe("Stopwatch unit tests", () => {
       updateTimerTxtFromEvent,
     } = useStopwatch();
 
-    WorkerHelper.postMessageToWorker.mockImplementation((data) => {
+    WorkerCommunicator.postMessageToWorker.mockImplementation((data) => {
       updateTimerTxtFromEvent({
         data: {
           timerTxt: data.timerTxt,
@@ -83,7 +83,7 @@ describe("Stopwatch unit tests", () => {
   it("Prevent duplicate start timers", async () => {
     const { timerTxt, onTimerInit, onTimerStart, onTimerReset, onTimerTeardown, updateTimerTxtFromEvent } = useStopwatch();
 
-    WorkerHelper.postMessageToWorker.mockImplementation((data) => {
+    WorkerCommunicator.postMessageToWorker.mockImplementation((data) => {
       updateTimerTxtFromEvent({
         data: {
           timerTxt: data.timerTxt,
@@ -114,7 +114,7 @@ describe("Stopwatch unit tests", () => {
   it("Ensure timer increments appropriately", async () => {
     const { timerTxt, onTimerInit, onTimerTeardown, onTimerStart, onTimerReset, updateTimerTxtFromEvent } = useStopwatch();
 
-    WorkerHelper.postMessageToWorker.mockImplementation((data) => {
+    WorkerCommunicator.postMessageToWorker.mockImplementation((data) => {
       updateTimerTxtFromEvent({
         data: {
           timerTxt: data.timerTxt,

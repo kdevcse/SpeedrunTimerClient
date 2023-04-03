@@ -21,7 +21,7 @@ export const WorkerCommands = {
   RESET: 2
 }
 
-export const workerWrapper = {
+export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {
     onmessage = func;
   },
@@ -29,5 +29,3 @@ export const workerWrapper = {
     postMessage(data);
   }
 };
-
-export default workerWrapper;
