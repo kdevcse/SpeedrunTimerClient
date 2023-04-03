@@ -1,4 +1,4 @@
-import { WorkerCommands, WorkerCommunicator } from "../helpers/worker-helper";
+import { WorkerCommands, WorkerCommunicator } from "../helpers/timer-worker-helper";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer;

@@ -1,4 +1,4 @@
-import Worker from '../workers/timer?worker';
+import Worker from '../workers/timer-worker?worker';
 
 // Class wrapper for stopwatch Web Worker
 export class StopWatchWorker {

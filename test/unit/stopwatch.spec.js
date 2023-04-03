@@ -1,10 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useStopwatch } from "../../src/composables/stopwatch";
 import { waitForTime } from "../helpers/time-helper";
-import  { StopWatchWorker, WorkerCommunicator } from "../../src/helpers/worker-helper";
-import { onMessageFunc } from "../../src/workers/timer";
+import  { StopWatchWorker, WorkerCommunicator } from "../../src/helpers/timer-worker-helper";
+import { onMessageFunc } from "../../src/workers/timer-worker";
 
-vi.mock("../../src/helpers/worker-helper", () => ({
+vi.mock("../../src/helpers/timer-worker-helper", () => ({
   WorkerCommunicator: {
     postMessageToWorker: vi.fn(),
     setOnMessageFunc: vi.fn(),

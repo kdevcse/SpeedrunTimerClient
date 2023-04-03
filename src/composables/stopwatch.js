@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { StopWatchWorker, WorkerCommands } from '../helpers/worker-helper';
+import { StopWatchWorker, WorkerCommands } from '../helpers/timer-worker-helper';
 
 export function useStopwatch() {
   let stopwatchWorker;
