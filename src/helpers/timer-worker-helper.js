@@ -10,7 +10,7 @@ export class StopWatchWorker {
     this.worker.onmessage = onMsgFunc;
   }
 
-  postMessageToMainThread(data) {
+  postMessageToWorker(data) {
     this.worker.postMessage(data);
   }
 
@@ -30,7 +30,7 @@ export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {
     onmessage = func;
   },
-  postMessageToWorker: (data) => {
+  postMessageToMainThread: (data) => {
     postMessage(data);
   }
 };

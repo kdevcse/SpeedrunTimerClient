@@ -20,19 +20,19 @@ export function useStopwatch() {
   }
   
   function onTimerStart() {
-    stopwatchWorker.postMessageToMainThread({
+    stopwatchWorker.postMessageToWorker({
       command: WorkerCommands.START
     });
   }
   
   function onTimerStop() {
-    stopwatchWorker.postMessageToMainThread({
+    stopwatchWorker.postMessageToWorker({
       command: WorkerCommands.STOP
     });
   }
   
   function onTimerReset() {
-    stopwatchWorker.postMessageToMainThread({
+    stopwatchWorker.postMessageToWorker({
       command: WorkerCommands.RESET
     });
   }

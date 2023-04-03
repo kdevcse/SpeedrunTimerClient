@@ -46,7 +46,7 @@ export function timerReset() {
   clearInterval(timer);
   [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
   paused = false;
-  WorkerCommunicator.postMessageToWorker({ 
+  WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
   timer = null;
@@ -60,7 +60,7 @@ function incrementTimer() {
 
   const elapsedMilliseconds = ((new Date()) - prevTime);
   setTimeValues(elapsedMilliseconds);
-  WorkerCommunicator.postMessageToWorker({ 
+  WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
   prevTime = new Date();
