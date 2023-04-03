@@ -23,10 +23,10 @@ export const WorkerCommands = {
 
 export const workerWrapper = {
   setOnMessageFunc: (func) => {
-    self.onmessage = func;
+    onmessage = func;
   },
   postMessageToWorker: (data) => {
-    self.postMessage(data);
+    postMessage(data);
   }
 };
 

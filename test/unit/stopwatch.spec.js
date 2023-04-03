@@ -21,6 +21,11 @@ vi.mock("../../src/helpers/worker-helper", () => ({
       terminate: vi.fn(),
     };
   }),
+  WorkerCommands: {
+    START: 0,
+    STOP: 1,
+    RESET: 2
+  }
 }));
 
 describe("Stopwatch unit tests", () => {
