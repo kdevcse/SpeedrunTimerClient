@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useStopwatch } from "../../src/composables/stopwatch";
 import { waitForTime } from "../helpers/time-helper";
-import  { WorkerCommunicator } from "../../src/helpers/worker-helper";
+import  { StopWatchWorker, WorkerCommunicator } from "../../src/helpers/worker-helper";
 import { onMessageFunc } from "../../src/workers/timer";
 
 vi.mock("../../src/helpers/worker-helper", () => ({
@@ -11,7 +11,8 @@ vi.mock("../../src/helpers/worker-helper", () => ({
   },
   StopWatchWorker: vi.fn().mockImplementation(() => {
     return {
-      postMessage: vi.fn().mockImplementation((data) => {
+      setOnMessageFunc: vi.fn(),
+      postMessageToMainThread: vi.fn().mockImplementation((data) => {
         onMessageFunc({
           data: {
             command: data.command,

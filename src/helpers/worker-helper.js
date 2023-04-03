@@ -1,12 +1,16 @@
 import Worker from '../workers/timer?worker';
 
+// Class wrapper for stopwatch Web Worker
 export class StopWatchWorker {
-  constructor(onMsgFunc) {
+  constructor() {
     this.worker = new Worker();
+  }
+
+  setOnMessageFunc(onMsgFunc) {
     this.worker.onmessage = onMsgFunc;
   }
 
-  postMessage(data) {
+  postMessageToMainThread(data) {
     this.worker.postMessage(data);
   }
 
@@ -21,6 +25,7 @@ export const WorkerCommands = {
   RESET: 2
 }
 
+// Communicates with Web Worker from main thread
 export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {
     onmessage = func;

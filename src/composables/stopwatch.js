@@ -11,7 +11,8 @@ export function useStopwatch() {
       return;
     }
 
-    stopwatchWorker = new StopWatchWorker(updateTimerTxtFromEvent);
+    stopwatchWorker = new StopWatchWorker();
+    stopwatchWorker.setOnMessageFunc(updateTimerTxtFromEvent);
   }
 
   function updateTimerTxtFromEvent(event) {
@@ -19,19 +20,19 @@ export function useStopwatch() {
   }
   
   function onTimerStart() {
-    stopwatchWorker.postMessage({
+    stopwatchWorker.postMessageToMainThread({
       command: WorkerCommands.START
     });
   }
   
   function onTimerStop() {
-    stopwatchWorker.postMessage({
+    stopwatchWorker.postMessageToMainThread({
       command: WorkerCommands.STOP
     });
   }
   
   function onTimerReset() {
-    stopwatchWorker.postMessage({
+    stopwatchWorker.postMessageToMainThread({
       command: WorkerCommands.RESET
     });
   }
