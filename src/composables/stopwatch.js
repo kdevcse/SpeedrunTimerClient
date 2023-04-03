@@ -1,18 +1,18 @@
 import { ref } from 'vue';
-import { StopWatchWorker, WorkerCommands } from '../helpers/timer-worker-helper';
+import { TimerWorker, WorkerCommands } from '../helpers/timer-worker-helper';
 
 export function useStopwatch() {
-  let stopwatchWorker;
+  let timerWorker;
 
   const timerTxt = ref('00:00:00.000');
 
   function onTimerInit() {
-    if (stopwatchWorker) {
+    if (timerWorker) {
       return;
     }
 
-    stopwatchWorker = new StopWatchWorker();
-    stopwatchWorker.setOnMessageFunc(updateTimerTxtFromWorkerMsg);
+    timerWorker = new TimerWorker();
+    timerWorker.setOnMessageFunc(updateTimerTxtFromWorkerMsg);
   }
 
   function updateTimerTxtFromWorkerMsg(event) {
@@ -20,30 +20,30 @@ export function useStopwatch() {
   }
   
   function onTimerStart() {
-    stopwatchWorker.postMessageToWorker({
+    timerWorker.postMessageToWorker({
       command: WorkerCommands.START
     });
   }
   
   function onTimerStop() {
-    stopwatchWorker.postMessageToWorker({
+    timerWorker.postMessageToWorker({
       command: WorkerCommands.STOP
     });
   }
   
   function onTimerReset() {
-    stopwatchWorker.postMessageToWorker({
+    timerWorker.postMessageToWorker({
       command: WorkerCommands.RESET
     });
   }
 
   function onTimerTeardown() {
-    if (!stopwatchWorker) {
+    if (!timerWorker) {
       return;
     }
 
-    stopwatchWorker.terminate();
-    stopwatchWorker = undefined;
+    timerWorker.terminate();
+    timerWorker = undefined;
   }
 
   return {

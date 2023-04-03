@@ -1,7 +1,7 @@
 import Worker from '../workers/timer-worker?worker';
 
 // Class wrapper for stopwatch Web Worker
-export class StopWatchWorker {
+export class TimerWorker {
   constructor() {
     this.worker = new Worker();
   }
