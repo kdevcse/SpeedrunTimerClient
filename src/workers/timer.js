@@ -25,18 +25,26 @@ function incrementTimer() {
 function setTimeValues(elapsedMilliseconds) {
   milliseconds += elapsedMilliseconds;
 
-  if (milliseconds >= 1000) {
-    seconds += (milliseconds - (milliseconds % 1000)) / 1000 ;
-    milliseconds = milliseconds % 1000;
-    if (seconds >= 60) {
-      minutes += (seconds - (seconds % 60)) / 60;
-      seconds = seconds % 60;
-      if (minutes >= 60) {
-        hours += (minutes - (minutes % 60)) / 60;
-        minutes = minutes % 60;
-      }
-    }
+  if (milliseconds < 1000) {
+    return;
   }
+
+  seconds += (milliseconds - (milliseconds % 1000)) / 1000 ;
+  milliseconds = milliseconds % 1000;
+
+  if (seconds < 60) {
+    return;
+  }
+
+  minutes += (seconds - (seconds % 60)) / 60;
+  seconds = seconds % 60;
+
+  if (minutes < 60) {
+    return;
+  }
+
+  hours += (minutes - (minutes % 60)) / 60;
+  minutes = minutes % 60;
 }
   
 export function getTimeFormatString() {
