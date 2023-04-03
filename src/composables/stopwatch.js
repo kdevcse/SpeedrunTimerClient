@@ -12,10 +12,10 @@ export function useStopwatch() {
     }
 
     stopwatchWorker = new StopWatchWorker();
-    stopwatchWorker.setOnMessageFunc(updateTimerTxtFromEvent);
+    stopwatchWorker.setOnMessageFunc(updateTimerTxtFromWorkerMsg);
   }
 
-  function updateTimerTxtFromEvent(event) {
+  function updateTimerTxtFromWorkerMsg(event) {
     timerTxt.value = event.data.timerTxt;
   }
   
@@ -53,7 +53,7 @@ export function useStopwatch() {
     onTimerReset,
     onTimerInit,
     onTimerTeardown,
-    updateTimerTxtFromEvent
+    updateTimerTxtFromWorkerMsg
   };
 }
 
