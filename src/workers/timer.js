@@ -1,4 +1,4 @@
-import workerHelper from "../helpers/worker-helper";
+import workerHelper, { WorkerCommands } from "../helpers/worker-helper";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer;
@@ -62,13 +62,13 @@ export function getTimeFormatString() {
 
 export function onMessageFunc(event) {
   switch(event.data.command) {
-    case 0:
+    case WorkerCommands.START:
       timerStart();
       break;
-    case 1:
+    case WorkerCommands.STOP:
       timerStop();
       break;
-    case 2:
+    case WorkerCommands.RESET:
       timerReset();
       break;
   }

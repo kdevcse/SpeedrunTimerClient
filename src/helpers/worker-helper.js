@@ -15,6 +15,12 @@ export class StopWatchWorker {
   }
 }
 
+export const WorkerCommands = {
+  START: 0,
+  STOP: 1,
+  RESET: 2
+}
+
 export const workerWrapper = {
   setOnMessageFunc: (func) => {
     self.onmessage = func;
