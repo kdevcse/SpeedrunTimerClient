@@ -1,6 +1,6 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { useStopwatch } from "../../src/composables/stopwatch";
-import { waitForTime } from "../helpers/time-helper";
+import { waitForTime } from "../helpers/mock-time-helper";
 import  { StopWatchWorker, WorkerCommunicator } from "../../src/helpers/timer-worker-helper";
 import { onMessageFunc } from "../../src/workers/timer-worker";
 
