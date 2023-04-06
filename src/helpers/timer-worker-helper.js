@@ -1,9 +1,10 @@
-import Worker from '../workers/timer-worker?worker';
-
 // Class wrapper for stopwatch Web Worker
 export class TimerWorker {
   constructor() {
-    this.worker = new Worker();
+    const url = new URL('../workers/timer-worker', import.meta.url);
+    this.worker = new Worker(url, {
+      type: "module"
+    });
   }
 
   setOnMessageFunc(onMsgFunc) {
