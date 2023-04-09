@@ -1,2 +1,9 @@
-# SpeedrunTimerClient
- A highly customizable speedrun timer app. Created as a project for a dev blog series as seen [here.](https://dev.to/kevthedev/making-a-speedrun-timer-prologue-4di)
+# Speedrun Timer Client
+
+## Introduction
+This application is inspired by [LiveSplit](https://github.com/LiveSplit) and is referenced from the development blog ["Making a Speedrun Timer"](https://dev.to/kevthedev/making-a-speedrun-timer-prologue-4di)
+
+## Technologies
+- Vue.Js
+- Vite
+- Electron
