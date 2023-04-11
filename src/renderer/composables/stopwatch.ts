@@ -3,7 +3,7 @@ import { TimerWorker } from '../helpers/timer-worker-helper';
 import { TimerCommands } from '../../common/timer-commands';
 
 export function useStopwatch() {
-  let timerWorker;
+  let timerWorker: TimerWorker;
 
   const timerTxt = ref('00:00:00.000');
 

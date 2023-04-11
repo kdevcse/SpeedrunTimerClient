@@ -2,9 +2,9 @@ import { WorkerCommunicator } from "../helpers/timer-worker-helper";
 import { TimerCommands } from "../../common/timer-commands";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
-let timer;
+let timer: NodeJS.Timer;
 let paused = false;
-let prevTime;
+let prevTime: number;
 
 // Initialize the function to be used when receiving a message 
 (function init() {
@@ -32,7 +32,7 @@ export function timerStart() {
   }
   
   paused = false;
-  prevTime = new Date();
+  prevTime = new Date().getTime();
   timer = setInterval(incrementTimer, 10);
 }
 
@@ -69,7 +69,7 @@ function incrementTimer() {
 }
 
 // Helps remove redundant logic that would be used on setTimeValues
-function setTimeValueHelper(prevVal, currVal, incrementor) {
+function setTimeValueHelper(prevVal: number, currVal: number, incrementor: number) {
   if (prevVal < incrementor) {
     return [ prevVal, currVal ];
   }
@@ -80,7 +80,7 @@ function setTimeValueHelper(prevVal, currVal, incrementor) {
 }
 
 // Set timer values to be formatted
-function setTimeValues(elapsedMilliseconds) {
+function setTimeValues(elapsedMilliseconds: number) {
   milliseconds += elapsedMilliseconds;
 
   [ milliseconds, seconds ] = setTimeValueHelper(milliseconds, seconds, 1000);

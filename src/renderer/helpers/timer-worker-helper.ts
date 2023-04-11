@@ -23,12 +23,16 @@ export class TimerWorker {
   }
 }
 
+export interface TimerEventMessage {
+  timerTxt: string
+}
+
 // Communicates with Web Worker from main thread
 export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {
     onmessage = func;
   },
-  postMessageToMainThread: (data) => {
+  postMessageToMainThread: (data: TimerEventMessage) => {
     postMessage(data);
   }
 };

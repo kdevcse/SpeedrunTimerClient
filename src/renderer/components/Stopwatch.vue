@@ -14,7 +14,7 @@ const {
 
 onMounted(() => {
   onTimerInit();
-  (window as any).electronAPI.listenForTimerCommands((_, data) => {
+  (window as any).electronAPI.listenForTimerCommands((_, data: TimerCommands) => {
     switch(data) {
       case TimerCommands.START:
         onTimerStart();
