@@ -50,7 +50,7 @@ describe("Stopwatch unit tests", () => {
       updateTimerTxtFromWorkerMsg,
     } = useStopwatch();
 
-    WorkerCommunicator.postMessageToMainThread.mockImplementation((data) => {
+    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,
@@ -84,7 +84,7 @@ describe("Stopwatch unit tests", () => {
   it("Prevent duplicate start timers", async () => {
     const { timerTxt, onTimerInit, onTimerStart, onTimerReset, onTimerTeardown, updateTimerTxtFromWorkerMsg } = useStopwatch();
 
-    WorkerCommunicator.postMessageToMainThread.mockImplementation((data) => {
+    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,
@@ -115,7 +115,7 @@ describe("Stopwatch unit tests", () => {
   it("Ensure timer increments appropriately", async () => {
     const { timerTxt, onTimerInit, onTimerTeardown, onTimerStart, onTimerReset, updateTimerTxtFromWorkerMsg } = useStopwatch();
 
-    WorkerCommunicator.postMessageToMainThread.mockImplementation((data) => {
+    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,

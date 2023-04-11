@@ -58,12 +58,13 @@ function incrementTimer() {
     return;
   }
 
-  const elapsedMilliseconds = ((new Date()) - prevTime);
+  const currTime = new Date().getTime();
+  const elapsedMilliseconds = ((currTime) - prevTime);
   setTimeValues(elapsedMilliseconds);
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
-  prevTime = new Date();
+  prevTime = new Date().getTime();
 }
 
 // Helps remove redundant logic that would be used on setTimeValues

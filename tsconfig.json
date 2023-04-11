@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2019",
+    "module": "NodeNext",
+    "target": "ESNext",
     "outDir": "dist",
     "sourceMap": true,
     "experimentalDecorators": true,
