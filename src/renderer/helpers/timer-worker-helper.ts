@@ -22,12 +22,6 @@ export class TimerWorker {
   }
 }
 
-export const WorkerCommands = {
-  START: 0,
-  STOP: 1,
-  RESET: 2
-}
-
 // Communicates with Web Worker from main thread
 export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {

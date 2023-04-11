@@ -1,5 +1,6 @@
 import { ref } from 'vue';
-import { TimerWorker, WorkerCommands } from '../helpers/timer-worker-helper';
+import { TimerWorker } from '../helpers/timer-worker-helper';
+import { TimerCommands } from '../../common/timer-commands';
 
 export function useStopwatch() {
   let timerWorker;
@@ -21,19 +22,19 @@ export function useStopwatch() {
   
   function onTimerStart() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.START
+      command: TimerCommands.START
     });
   }
   
   function onTimerStop() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.STOP
+      command: TimerCommands.STOP
     });
   }
   
   function onTimerReset() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.RESET
+      command: TimerCommands.RESET
     });
   }
 

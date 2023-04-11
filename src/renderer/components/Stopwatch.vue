@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-import { WorkerCommands } from '../helpers/timer-worker-helper';
+import { TimerCommands } from '../../common/timer-commands';
 
 const {
   timerTxt,
@@ -16,13 +16,13 @@ onMounted(() => {
   onTimerInit();
   (window as any).electronAPI.listenForTimerCommands((_, data) => {
     switch(data) {
-      case WorkerCommands.START:
+      case TimerCommands.START:
         onTimerStart();
         break;
-      case WorkerCommands.STOP:
+      case TimerCommands.STOP:
         onTimerStop();
         break;
-      case WorkerCommands.RESET:
+      case TimerCommands.RESET:
         onTimerReset();
         break;
       }

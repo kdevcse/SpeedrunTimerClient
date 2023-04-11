@@ -1,4 +1,5 @@
-import { WorkerCommands, WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { TimerCommands } from "../../common/timer-commands";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer;
@@ -13,13 +14,13 @@ let prevTime;
 // The function to be called when receiving a message
 export function onMessageFunc(event) {
   switch(event.data.command) {
-    case WorkerCommands.START:
+    case TimerCommands.START:
       timerStart();
       break;
-    case WorkerCommands.STOP:
+    case TimerCommands.STOP:
       timerStop();
       break;
-    case WorkerCommands.RESET:
+    case TimerCommands.RESET:
       timerReset();
       break;
   }
