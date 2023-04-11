@@ -1,14 +1,11 @@
-import { TimerCommandMessage, WorkerCommunicator } from "../helpers/timer-worker-helper";
-import { TimerCommands } from "../../common/timer-commands";
+import { WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { TimerCommands } from "../../common/types/timer-commands";
+import { TimerCommandEvent } from "../types/timer-types";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer: NodeJS.Timer | undefined;
 let paused = false;
 let prevTime: number;
-
-interface TimerCommandEvent {
-  data: TimerCommandMessage
-}
 
 // Initialize the function to be used when receiving a message 
 (function init() {

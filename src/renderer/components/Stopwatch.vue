@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-import { TimerCommands } from '../../common/timer-commands';
-import { ElectronApiWindow } from '../../common/electron-api';
+import { TimerCommands } from '../../common/types/timer-commands';
+import { ElectronApiWindow } from '../../common/types/electron-api';
 
 const {
   timerTxt,

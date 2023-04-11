@@ -1,10 +1,7 @@
 import { ref } from 'vue';
-import { TimerUpdateMessage, TimerWorker } from '../helpers/timer-worker-helper';
-import { TimerCommands } from '../../common/timer-commands';
-
-interface UpdateTimerTextEvent {
-  data: TimerUpdateMessage
-}
+import { TimerWorker } from '../helpers/timer-worker-helper';
+import { TimerCommands } from '../../common/types/timer-commands';
+import { UpdateTimerTextEvent } from '../types/timer-types';
 
 export function useStopwatch() {
   let timerWorker: TimerWorker;

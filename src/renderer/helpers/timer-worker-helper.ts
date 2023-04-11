@@ -1,6 +1,5 @@
-import { TimerCommands } from "../../common/timer-commands";
-
-type TimerOnMessageFunction = (this: Worker | Window, ev: MessageEvent) => any;
+import { TimerCommands } from "../../common/types/timer-commands";
+import { TimerOnMessageFunction } from "../types/timer-types";
 
 // Class wrapper for stopwatch Web Worker
 export class TimerWorker {
