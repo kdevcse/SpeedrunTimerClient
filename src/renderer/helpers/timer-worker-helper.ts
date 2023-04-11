@@ -1,3 +1,5 @@
+import { TimerCommands } from "../../common/timer-commands";
+
 // Class wrapper for stopwatch Web Worker
 export class TimerWorker {
   worker: Worker;
@@ -14,7 +16,7 @@ export class TimerWorker {
     this.worker.onmessage = onMsgFunc;
   }
 
-  postMessageToWorker(data) {
+  postMessageToWorker(data: TimerCommandMessage) {
     this.worker.postMessage(data);
   }
 
@@ -23,7 +25,11 @@ export class TimerWorker {
   }
 }
 
-export interface TimerEventMessage {
+export interface TimerCommandMessage {
+  command: TimerCommands
+}
+
+export interface TimerUpdateMessage {
   timerTxt: string
 }
 
@@ -32,7 +38,7 @@ export const WorkerCommunicator = {
   setOnMessageFunc: (func) => {
     onmessage = func;
   },
-  postMessageToMainThread: (data: TimerEventMessage) => {
+  postMessageToMainThread: (data: TimerUpdateMessage) => {
     postMessage(data);
   }
 };
