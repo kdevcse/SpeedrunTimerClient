@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import { WorkerCommands } from '../helpers/timer-worker-helper';
@@ -14,7 +14,7 @@ const {
 
 onMounted(() => {
   onTimerInit();
-  window.electronAPI.listenForTimerCommands((_, data) => {
+  (window as any).electronAPI.listenForTimerCommands((_, data) => {
     switch(data) {
       case WorkerCommands.START:
         onTimerStart();
