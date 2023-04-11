@@ -1,8 +1,10 @@
 import { TimerCommands } from "../../common/timer-commands";
 
+type TimerOnMessageFunction = (this: Worker | Window, ev: MessageEvent) => any;
+
 // Class wrapper for stopwatch Web Worker
 export class TimerWorker {
-  worker: Worker;
+  worker: Worker | undefined;
 
   constructor() {
     // @ts-ignore: No way around import.meta.url error but it runs fine
@@ -12,16 +14,21 @@ export class TimerWorker {
     });
   }
 
-  setOnMessageFunc(onMsgFunc) {
+  setOnMessageFunc(onMsgFunc: TimerOnMessageFunction) {
+    if (!this.worker) {
+      return;
+    }
+
     this.worker.onmessage = onMsgFunc;
   }
 
   postMessageToWorker(data: TimerCommandMessage) {
-    this.worker.postMessage(data);
+    this.worker?.postMessage(data);
   }
 
   terminate() {
-    this.worker.terminate();
+    this.worker?.terminate();
+    this.worker = undefined;
   }
 }
 
@@ -35,7 +42,7 @@ export interface TimerUpdateMessage {
 
 // Communicates with Web Worker from main thread
 export const WorkerCommunicator = {
-  setOnMessageFunc: (func) => {
+  setOnMessageFunc: (func: TimerOnMessageFunction) => {
     onmessage = func;
   },
   postMessageToMainThread: (data: TimerUpdateMessage) => {

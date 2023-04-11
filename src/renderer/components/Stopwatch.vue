@@ -2,6 +2,7 @@
 import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import { TimerCommands } from '../../common/timer-commands';
+import { ElectronApiWindow } from '../../common/electron-api';
 
 const {
   timerTxt,
@@ -14,7 +15,8 @@ const {
 
 onMounted(() => {
   onTimerInit();
-  (window as any).electronAPI.listenForTimerCommands((_, data: TimerCommands) => {
+  const electronApiGlobal: ElectronApiWindow = (window as any);
+  electronApiGlobal.electronAPI.listenForTimerCommands((_, data: TimerCommands) => {
     switch(data) {
       case TimerCommands.START:
         onTimerStart();

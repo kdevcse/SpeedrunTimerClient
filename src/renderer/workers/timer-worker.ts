@@ -1,10 +1,14 @@
-import { WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { TimerCommandMessage, WorkerCommunicator } from "../helpers/timer-worker-helper";
 import { TimerCommands } from "../../common/timer-commands";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
-let timer: NodeJS.Timer;
+let timer: NodeJS.Timer | undefined;
 let paused = false;
 let prevTime: number;
+
+interface TimerCommandEvent {
+  data: TimerCommandMessage
+}
 
 // Initialize the function to be used when receiving a message 
 (function init() {
@@ -12,7 +16,7 @@ let prevTime: number;
 })();
 
 // The function to be called when receiving a message
-export function onMessageFunc(event) {
+export function onMessageFunc(event: TimerCommandEvent) {
   switch(event.data.command) {
     case TimerCommands.START:
       timerStart();
@@ -39,7 +43,7 @@ export function timerStart() {
 export function timerStop() {
   paused = true;
   clearInterval(timer);
-  timer = null;
+  timer = undefined;
 }
 
 export function timerReset() {
@@ -50,7 +54,7 @@ export function timerReset() {
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
-  timer = null;
+  timer = undefined;
 }
 
 // Increments the tracked time values and sends message back to main thread

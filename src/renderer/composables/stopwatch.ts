@@ -1,6 +1,10 @@
 import { ref } from 'vue';
-import { TimerWorker } from '../helpers/timer-worker-helper';
+import { TimerUpdateMessage, TimerWorker } from '../helpers/timer-worker-helper';
 import { TimerCommands } from '../../common/timer-commands';
+
+interface UpdateTimerTextEvent {
+  data: TimerUpdateMessage
+}
 
 export function useStopwatch() {
   let timerWorker: TimerWorker;
@@ -16,7 +20,7 @@ export function useStopwatch() {
     timerWorker.setOnMessageFunc(updateTimerTxtFromWorkerMsg);
   }
 
-  function updateTimerTxtFromWorkerMsg(event) {
+  function updateTimerTxtFromWorkerMsg(event: UpdateTimerTextEvent) {
     timerTxt.value = event.data.timerTxt;
   }
   
@@ -44,7 +48,6 @@ export function useStopwatch() {
     }
 
     timerWorker.terminate();
-    timerWorker = undefined;
   }
 
   return {
