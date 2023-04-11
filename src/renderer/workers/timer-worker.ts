@@ -1,9 +1,11 @@
-import { WorkerCommands, WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { WorkerCommunicator } from "../helpers/timer-worker-helper";
+import { TimerCommands } from "../../common/types/timer-commands";
+import { TimerCommandEvent } from "../types/timer-types";
 
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
-let timer;
+let timer: NodeJS.Timer | undefined;
 let paused = false;
-let prevTime;
+let prevTime: number;
 
 // Initialize the function to be used when receiving a message 
 (function init() {
@@ -11,15 +13,15 @@ let prevTime;
 })();
 
 // The function to be called when receiving a message
-export function onMessageFunc(event) {
+export function onMessageFunc(event: TimerCommandEvent) {
   switch(event.data.command) {
-    case WorkerCommands.START:
+    case TimerCommands.START:
       timerStart();
       break;
-    case WorkerCommands.STOP:
+    case TimerCommands.STOP:
       timerStop();
       break;
-    case WorkerCommands.RESET:
+    case TimerCommands.RESET:
       timerReset();
       break;
   }
@@ -31,14 +33,14 @@ export function timerStart() {
   }
   
   paused = false;
-  prevTime = new Date();
+  prevTime = new Date().getTime();
   timer = setInterval(incrementTimer, 10);
 }
 
 export function timerStop() {
   paused = true;
   clearInterval(timer);
-  timer = null;
+  timer = undefined;
 }
 
 export function timerReset() {
@@ -49,7 +51,7 @@ export function timerReset() {
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
-  timer = null;
+  timer = undefined;
 }
 
 // Increments the tracked time values and sends message back to main thread
@@ -58,16 +60,17 @@ function incrementTimer() {
     return;
   }
 
-  const elapsedMilliseconds = ((new Date()) - prevTime);
+  const currTime = new Date().getTime();
+  const elapsedMilliseconds = ((currTime) - prevTime);
   setTimeValues(elapsedMilliseconds);
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
-  prevTime = new Date();
+  prevTime = new Date().getTime();
 }
 
 // Helps remove redundant logic that would be used on setTimeValues
-function setTimeValueHelper(prevVal, currVal, incrementor) {
+function setTimeValueHelper(prevVal: number, currVal: number, incrementor: number) {
   if (prevVal < incrementor) {
     return [ prevVal, currVal ];
   }
@@ -78,7 +81,7 @@ function setTimeValueHelper(prevVal, currVal, incrementor) {
 }
 
 // Set timer values to be formatted
-function setTimeValues(elapsedMilliseconds) {
+function setTimeValues(elapsedMilliseconds: number) {
   milliseconds += elapsedMilliseconds;
 
   [ milliseconds, seconds ] = setTimeValueHelper(milliseconds, seconds, 1000);

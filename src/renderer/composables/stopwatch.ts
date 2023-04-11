@@ -1,8 +1,10 @@
 import { ref } from 'vue';
-import { TimerWorker, WorkerCommands } from '../helpers/timer-worker-helper';
+import { TimerWorker } from '../helpers/timer-worker-helper';
+import { TimerCommands } from '../../common/types/timer-commands';
+import { UpdateTimerTextEvent } from '../types/timer-types';
 
 export function useStopwatch() {
-  let timerWorker;
+  let timerWorker: TimerWorker;
 
   const timerTxt = ref('00:00:00.000');
 
@@ -15,25 +17,25 @@ export function useStopwatch() {
     timerWorker.setOnMessageFunc(updateTimerTxtFromWorkerMsg);
   }
 
-  function updateTimerTxtFromWorkerMsg(event) {
+  function updateTimerTxtFromWorkerMsg(event: UpdateTimerTextEvent) {
     timerTxt.value = event.data.timerTxt;
   }
   
   function onTimerStart() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.START
+      command: TimerCommands.START
     });
   }
   
   function onTimerStop() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.STOP
+      command: TimerCommands.STOP
     });
   }
   
   function onTimerReset() {
     timerWorker.postMessageToWorker({
-      command: WorkerCommands.RESET
+      command: TimerCommands.RESET
     });
   }
 
@@ -43,7 +45,6 @@ export function useStopwatch() {
     }
 
     timerWorker.terminate();
-    timerWorker = undefined;
   }
 
   return {
