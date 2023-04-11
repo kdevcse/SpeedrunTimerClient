@@ -3,6 +3,7 @@ export class TimerWorker {
   worker: Worker;
 
   constructor() {
+    // @ts-ignore: No way around import.meta.url error but it runs fine
     const url = new URL('../workers/timer-worker', import.meta.url);
     this.worker = new Worker(url, {
       type: "module"
