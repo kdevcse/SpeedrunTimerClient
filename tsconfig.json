@@ -11,5 +11,5 @@
     "declaration": true,
     "skipLibCheck": true,
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts", "vite.renderer.config.mts", "vite.renderer.config.mts", "vite.preload.config.mts", "vite.preload.config.mts", "vite.main.config.mts", "vite.main.config.mts"]
 }
