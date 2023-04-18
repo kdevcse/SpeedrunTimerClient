@@ -1,7 +1,7 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { describe, expect, it, vi, beforeEach, afterEach, Mock } from "vitest";
 import { useStopwatch } from "../../renderer/composables/stopwatch";
 import { waitForTime } from "../helpers/mock-time-helper";
-import  { TimerUpdateMessage, TimerWorker, WorkerCommunicator } from "../../renderer/helpers/timer-worker-helper";
+import  { TimerUpdateMessage, WorkerCommunicator } from "../../renderer/helpers/timer-worker-helper";
 import { onMessageFunc } from "../../renderer/workers/timer-worker";
 
 vi.mock("../../renderer/helpers/timer-worker-helper", () => ({
@@ -45,7 +45,7 @@ describe("Stopwatch unit tests", () => {
       updateTimerTxtFromWorkerMsg,
     } = useStopwatch();
 
-    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data: TimerUpdateMessage) => {
+    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,
@@ -79,7 +79,7 @@ describe("Stopwatch unit tests", () => {
   it("Prevent duplicate start timers", async () => {
     const { timerTxt, onTimerInit, onTimerStart, onTimerReset, onTimerTeardown, updateTimerTxtFromWorkerMsg } = useStopwatch();
 
-    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data: TimerUpdateMessage) => {
+    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,
@@ -110,7 +110,7 @@ describe("Stopwatch unit tests", () => {
   it("Ensure timer increments appropriately", async () => {
     const { timerTxt, onTimerInit, onTimerTeardown, onTimerStart, onTimerReset, updateTimerTxtFromWorkerMsg } = useStopwatch();
 
-    (WorkerCommunicator.postMessageToMainThread as any).mockImplementation((data: TimerUpdateMessage) => {
+    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
       updateTimerTxtFromWorkerMsg({
         data: {
           timerTxt: data.timerTxt,

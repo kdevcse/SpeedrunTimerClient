@@ -9,7 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\"",
+    "lint": "npx eslint .",
     "test": "vitest",
     "coverage": "vitest run --coverage"
   },
@@ -26,9 +26,12 @@
     "@electron-forge/maker-squirrel": "^6.1.1",
     "@electron-forge/maker-zip": "^6.1.1",
     "@electron-forge/plugin-vite": "^6.1.1",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vitest/coverage-c8": "^0.29.8",
     "electron": "24.0.0",
+    "eslint": "^8.38.0",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "vitest": "^0.29.8"
