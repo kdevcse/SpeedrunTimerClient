@@ -8,4 +8,4 @@ export interface ElectronApi {
   listenForTimerCommands: (listener: TimerCommandListener) => void;
 }
 
-export type TimerCommandListener = (_: any, event: Electron.IpcRendererEvent) => void;
+export type TimerCommandListener = (_: unknown, event: Electron.IpcRendererEvent) => void;
