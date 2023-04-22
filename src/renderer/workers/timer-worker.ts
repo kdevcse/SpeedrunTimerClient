@@ -5,6 +5,7 @@ import { TimerCommandEvent } from "../types/timer-types";
 let [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
 let timer: NodeJS.Timer | undefined;
 let paused = false;
+let ended = false;
 let prevTime: number;
 
 // Initialize the function to be used when receiving a message 
@@ -18,8 +19,16 @@ export function onMessageFunc(event: TimerCommandEvent) {
     case TimerCommands.START:
       timerStart();
       break;
+    case TimerCommands.SPLIT:
+      timerSplit();
+      break;
     case TimerCommands.STOP:
       timerStop();
+      break;
+    case TimerCommands.SPLITANDSTOP:
+      timerStop();
+      timerSplit();
+      ended = true;
       break;
     case TimerCommands.RESET:
       timerReset();
@@ -28,6 +37,10 @@ export function onMessageFunc(event: TimerCommandEvent) {
 }
 
 export function timerStart() {
+  if (ended) {
+    timerReset();
+  }
+
   if (timer) {
     return;
   }
@@ -35,6 +48,16 @@ export function timerStart() {
   paused = false;
   prevTime = new Date().getTime();
   timer = setInterval(incrementTimer, 10);
+}
+
+export function timerSplit() {
+  if (paused) {
+    return;
+  }
+
+  WorkerCommunicator.postMessageToMainThread({
+    splitTime: getElapsedMilliseconds()
+  });
 }
 
 export function timerStop() {
@@ -45,9 +68,11 @@ export function timerStop() {
 
 export function timerReset() {
   paused = true;
+  ended = true;
   clearInterval(timer);
   [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
   paused = false;
+  ended = false;
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
@@ -60,9 +85,7 @@ function incrementTimer() {
     return;
   }
 
-  const currTime = new Date().getTime();
-  const elapsedMilliseconds = ((currTime) - prevTime);
-  setTimeValues(elapsedMilliseconds);
+  setTimeValues(getElapsedMilliseconds());
   WorkerCommunicator.postMessageToMainThread({ 
     timerTxt: getTimeFormatString() 
   });
@@ -87,6 +110,11 @@ function setTimeValues(elapsedMilliseconds: number) {
   [ milliseconds, seconds ] = setTimeValueHelper(milliseconds, seconds, 1000);
   [ seconds, minutes ] = setTimeValueHelper(seconds, minutes, 60);
   [ minutes, hours ] = setTimeValueHelper(minutes, hours, 60);
+}
+
+function getElapsedMilliseconds() {
+  const currTime = new Date().getTime();
+  return ((currTime) - prevTime);
 }
 
 // Formats the message to be sent to main thread

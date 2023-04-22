@@ -36,7 +36,8 @@ export interface TimerCommandMessage {
 }
 
 export interface TimerUpdateMessage {
-  timerTxt: string
+  timerTxt?: string,
+  splitTime?: number
 }
 
 // Communicates with Web Worker from main thread
