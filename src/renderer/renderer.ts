@@ -3,15 +3,8 @@ import "./global-style.css"; // Global style
 import App from "./App.vue";
 import Router from "./router";
 
-// Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+// PrimeVue
+import PrimeVue from 'primevue/config';
+import 'primevue/resources/themes/aura-dark-indigo/theme.css'; // theme
 
-const vuetify = createVuetify({
-  components,
-  directives,
-})
-
-createApp(App).use(vuetify).use(Router).mount("#app");
+createApp(App).use(PrimeVue).use(Router).mount("#app");

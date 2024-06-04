@@ -1,44 +1,34 @@
 <template>
   <main>
-    <RouterView id="main-view" @contextmenu="openContextMenu">
-    </RouterView>
-    <div>
-      <v-menu activator="#main-view" target="cursor">
-        <v-list>
-          <v-list-item>
-            <RouterLink to="/config">Configuration</RouterLink>
-          </v-list-item>
-          <v-list-item>
-            <p>Hello?</p>
-          </v-list-item>
-        </v-list>
-      </v-menu>
-    </div>
+    <RouterView id="main-view" @contextmenu="openContextMenu"/>
+    <ContextMenu ref="menu" :model="items"/>
   </main>
 </template>
 
 <script setup lang="ts">
+import ContextMenu from 'primevue/contextmenu';
+import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
-import { nextTick } from 'vue';
 
+const router = useRouter();
 const isSupported = ref(false);
-const showContextMenu = ref(true);
-const contextMenuPosition = ref({ x: 0, y: 0 });
+const menu = ref();
+const items = ref([
+  {
+    label: 'Configuration',
+    command: () => {
+      router.push('/config');
+    },
+  },
+]);
 
 onMounted(() => {
   isSupported.value = typeof(Worker) !== "undefined";
 });
 
 async function openContextMenu(event: MouseEvent) {
-  console.log('Opening context menu');
-  showContextMenu.value = false;
   event.preventDefault();
-  await nextTick();
-  showContextMenu.value = true;
-  contextMenuPosition.value = {
-    x: event.clientX,
-    y: event.clientY
-  };
+  menu.value.show(event);
 }
 
 </script>
@@ -46,6 +36,7 @@ async function openContextMenu(event: MouseEvent) {
 <style>
 main {
   display: flex;
+  flex: 1;
   width: 100%;
   height: 100%;
   flex-direction: column;
