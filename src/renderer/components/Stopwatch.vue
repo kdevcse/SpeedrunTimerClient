@@ -16,8 +16,8 @@ const {
 onMounted(() => {
   onTimerInit();
   const electronApiGlobal: ElectronApiWindow = (window as any);
-  electronApiGlobal.electronAPI.listenForTimerCommands((_, data: TimerCommands) => {
-    switch(data) {
+  electronApiGlobal.electronAPI.listenForTimerCommands((_, event) => {
+    switch(event as unknown as TimerCommands) {
       case TimerCommands.START:
         onTimerStart();
         break;

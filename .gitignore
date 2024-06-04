@@ -90,6 +90,7 @@ typings/
 
 # Electron-Forge
 out/
+dist
 
 # vite timestamps
 vite.config.js.timestamp*
