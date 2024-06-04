@@ -39,13 +39,13 @@ export function timerStart() {
 
 export function timerStop() {
   paused = true;
-  clearInterval(timer);
+  clearInterval(timer as any);
   timer = undefined;
 }
 
 export function timerReset() {
   paused = true;
-  clearInterval(timer);
+  clearInterval(timer as any);
   [milliseconds, seconds, minutes, hours] = [0, 0, 0, 0];
   paused = false;
   WorkerCommunicator.postMessageToMainThread({ 
