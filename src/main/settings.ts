@@ -1,14 +1,15 @@
 import { App } from "electron";
 import fs from "fs";
+import { UiohookKey } from "uiohook-napi";
 
 interface UserSettings {
   darkMode: boolean;
   enableGlobalHotkeys: boolean;
   globalHotkeys: {
-    start: string;
-    split: string;
-    stop: string;
-    reset: string;
+    start: any;
+    split: number;
+    stop: number;
+    reset: number;
   };
 }
 
@@ -20,10 +21,10 @@ const defaultSettings: UserSettings = {
   darkMode: false,
   enableGlobalHotkeys: true,
   globalHotkeys: {
-    start: "1",
-    split: "2",
-    stop: "3",
-    reset: "4",
+    start: UiohookKey[1],
+    split: UiohookKey[2],
+    stop: UiohookKey[3],
+    reset: UiohookKey[4],
   },
 };
 
@@ -37,7 +38,7 @@ export async function loadUserSettings(app: App): Promise<UserSettings> {
           resolve(defaultSettings);
         } else {
           console.log("User settings file found");
-          return JSON.parse(data) as UserSettings;
+          resolve(JSON.parse(data) as UserSettings);
         }
       });
     }

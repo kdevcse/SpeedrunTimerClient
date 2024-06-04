@@ -14,7 +14,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow: BrowserWindow;
-const createWindow = () => {
+const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -32,7 +32,7 @@ const createWindow = () => {
   }
 
   // Initialize the app (settings, global hotkeys, etc.)
-  initApp(mainWindow, app);
+  await initApp(mainWindow, app);
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools(); //TODO: add code to enable DevTools
