@@ -32,7 +32,7 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools(); //TODO: add code to enable DevTools
 };
 
 // This method will be called when Electron has finished
