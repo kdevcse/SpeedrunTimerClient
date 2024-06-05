@@ -4,7 +4,18 @@ import App from "./App.vue";
 import Router from "./router";
 
 // PrimeVue
-import PrimeVue from 'primevue/config';
-import 'primevue/resources/themes/aura-dark-indigo/theme.css'; // theme
+// Vuetify
+import 'vuetify/styles'
+import { createVuetify } from 'vuetify'
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
-createApp(App).use(PrimeVue).use(Router).mount("#app");
+const vuetify = createVuetify({
+  theme: {
+    defaultTheme: 'dark',
+  },
+  components,
+  directives,
+})
+
+createApp(App).use(vuetify).use(Router).mount("#app");

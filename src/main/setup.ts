@@ -8,7 +8,6 @@ export async function initApp(mainWindow: BrowserWindow, app: App) {
   const userSettings = await loadUserSettings(app);
 
   uIOhook.on("keydown", (e) => {
-    console.log(`Keycode: ${e.keycode}`, userSettings);
     if (e.keycode === UiohookKey[1]) {
       mainWindow.webContents.send("global-timer", TimerCommands.START);
     }

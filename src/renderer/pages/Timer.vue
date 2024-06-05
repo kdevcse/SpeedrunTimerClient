@@ -1,12 +1,16 @@
 <template>
-  <div class="timer-container">
-    <p>{{ timerTxt }}</p>
-    <div class="timer-btns-container">
-      <button @mousedown="onTimerStart">Start</button>
-      <button @mousedown="onTimerStop">Stop</button>
-      <button @mousedown="onTimerReset">Reset</button>
-    </div>
-  </div>
+  <ContextNavMenu>
+    <template #activator="{ show }">
+      <div class="timer-container" @contextmenu="show">
+        <p>{{ timerTxt }}</p>
+        <div class="timer-btns-container">
+          <button @mousedown="onTimerStart">Start</button>
+          <button @mousedown="onTimerStop">Stop</button>
+          <button @mousedown="onTimerReset">Reset</button>
+        </div>
+      </div>
+    </template>
+  </ContextNavMenu>
 </template>
 
 <script setup lang="ts">
@@ -14,6 +18,7 @@ import { onMounted, onUnmounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import { TimerCommands } from '../../common/types/timer-commands';
 import { ElectronApiWindow } from '../../common/types/electron-api';
+import ContextNavMenu from '../components/ContextNavMenu.vue';
 
 const {
   timerTxt,
@@ -55,6 +60,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   height: 100%;
+  width: 100%;
+  flex: 1;
 }
 .timer-btns-container {
   display: flex;
