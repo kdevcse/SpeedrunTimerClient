@@ -41,6 +41,7 @@
   "license": "MIT",
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1",
+    "keycode": "^2.2.1",
     "uiohook-napi": "^1.5.4",
     "vue": "^3.4.27",
     "vue-router": "^4.3.2",

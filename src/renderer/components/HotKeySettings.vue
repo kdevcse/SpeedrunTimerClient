@@ -16,30 +16,33 @@
 
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
-import { Settings, defaultSettings } from '../../common/types/settings-types';
+import { getDefaultSettings } from '../../common/helpers/settings-helper';
 import { onMounted } from 'vue';
+import keycode from 'keycode';
+import { GlobalHotKeyActions, Settings } from '../../common/types/settings-types';
+import { convertUiohookFromKeycode, getHotKeyName } from '../../common/helpers/keycode-converter';
 
 onMounted(() => {
-  updatedSettings.value = props.settings ?? defaultSettings;
+  updatedSettings.value = props.settings ?? getDefaultSettings(true);
 });
 
 const props = defineProps({
   settings: Object as PropType<Settings>,
 });
 
-const updatedSettings = ref<Settings>(defaultSettings);
+const updatedSettings = ref<Settings>(getDefaultSettings(true));
 
 const configuredHotKeys = computed(() => {
-  const data: any = updatedSettings.value.hotkeySettings.globalHotkeys;
+  const data: GlobalHotKeyActions = updatedSettings.value.hotkeySettings.globalHotkeys;
 
   if (!data) {
     return [];
   }
 
-  return Object.keys(data).map((key: string) => {
+  return Object.keys(data).map((key: keyof GlobalHotKeyActions) => {
     return {
       name: key.toUpperCase(),
-      value: data[key] as string,
+      value: getHotKeyName(data[key]),
     };
   });
 });
@@ -47,7 +50,7 @@ const configuredHotKeys = computed(() => {
 const addHotKey = (index: number) => {
   console.log('Add Hot Key');
   document.addEventListener('keydown', (event) => {
-    console.log(event.key);
+    console.log(keycode(event));
   });
 };
 </script>

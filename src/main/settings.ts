@@ -1,6 +1,7 @@
 import { App } from "electron";
 import fs from "fs";
-import { Settings, defaultSettings } from "../common/types/settings-types";
+import { Settings } from "../common/types/settings-types";
+import { getDefaultSettings } from "../common/helpers/settings-helper";
 
 enum SYSTEM_FILE_PATHS {
   USER_SETTINGS = '/user_settings.json',
@@ -12,6 +13,7 @@ export async function loadUserSettings(app: App): Promise<Settings> {
       fs.readFile(app.getPath('userData') + SYSTEM_FILE_PATHS.USER_SETTINGS, 'utf-8', async (err, data) => {
         if (err) {
           console.log("User settings file not found");
+          const defaultSettings = getDefaultSettings(false);
           await writeUserSettings(app, defaultSettings);
           resolve(defaultSettings);
         } else {
