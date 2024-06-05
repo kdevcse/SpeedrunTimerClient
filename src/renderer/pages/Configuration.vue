@@ -39,7 +39,7 @@ import HotKeySettings from '../components/HotKeySettings.vue';
 import LayoutSettings from '../components/LayoutSettings.vue';
 import { Settings } from '../../common/types/settings-types';
 import { onMounted } from 'vue';
-import { ElectronApiWindow } from 'src/common/types/electron-api';
+import { ElectronApiWindow } from '../../common/types/electron-api';
 
 const tab = ref("1");
 const settings = ref<Settings>(null);

@@ -2,7 +2,7 @@
   <v-menu v-model:model-value="contxtMenu" activator="#menu-btn" :target="mousePos">
     <v-list>
       <v-list-item>
-        <RouterLink to="/config">Settings</RouterLink>
+        <RouterLink to="/settings" target="_blank">Settings</RouterLink>
       </v-list-item>
     </v-list>
   </v-menu>
