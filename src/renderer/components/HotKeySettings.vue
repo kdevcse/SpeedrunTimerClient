@@ -42,7 +42,7 @@ const configuredHotKeys = computed(() => {
   return Object.keys(data).map((key: keyof GlobalHotKeyActions) => {
     return {
       name: key.toUpperCase(),
-      value: getHotKeyName(data[key]),
+      value: getHotKeyName(data[key], true),
     };
   });
 });

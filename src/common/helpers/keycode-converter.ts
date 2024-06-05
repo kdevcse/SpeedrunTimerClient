@@ -1,3 +1,5 @@
+import { getOS } from "./utilities";
+
 type PlatformKeyCodes = {
   linux: number;
   macOS: number;
@@ -110,34 +112,7 @@ const keymap: KeyMap = {
 
 // uiohook uses linux keycodes, so we need to convert them to the appropriate keycodes for the current platform
 export function convertKeycodeFromUiohook(keycode: number, isRenderer: boolean): number | null {
-  let os: keyof PlatformKeyCodes;
-  let platform;
-
-  if (isRenderer) {
-    if (navigator.appVersion.indexOf("Win") != -1) {
-      platform = "win32";
-    }
-    if (navigator.appVersion.indexOf("Mac") != -1) {
-      platform = "darwin";
-    }
-    if (navigator.appVersion.indexOf("X11") != -1) {
-      platform = "linux";
-    }
-    if (navigator.appVersion.indexOf("Linux") != -1) { 
-      platform = "linux";
-    }
-  } else {
-    platform = process.platform;
-  }
-  
-  if (platform === 'linux') {
-    os = 'linux';
-  } else if (platform === 'darwin') {
-    os = 'macOS';
-  } else if (platform === 'win32') {
-    os = 'windows';
-  }
-
+  const os = getOS(isRenderer) as keyof PlatformKeyCodes;
   for(const keyval of Object.values(keymap)) {
     if (keyval['linux'] === keycode) {
       return keyval[os];
@@ -149,34 +124,7 @@ export function convertKeycodeFromUiohook(keycode: number, isRenderer: boolean):
 
 // uiohook uses linux keycodes, so we need to convert them to the appropriate keycodes for the current platform
 export function convertUiohookFromKeycode(keycode: number, isRenderer: boolean): number | null {
-  let os: keyof PlatformKeyCodes;
-  let platform;
-
-  if (isRenderer) {
-    if (navigator.appVersion.indexOf("Win") != -1) {
-      platform = "win32";
-    }
-    if (navigator.appVersion.indexOf("Mac") != -1) {
-      platform = "darwin";
-    }
-    if (navigator.appVersion.indexOf("X11") != -1) {
-      platform = "linux";
-    }
-    if (navigator.appVersion.indexOf("Linux") != -1) { 
-      platform = "linux";
-    }
-  } else {
-    platform = process.platform;
-  }
-  
-  if (platform === 'linux') {
-    os = 'linux';
-  } else if (platform === 'darwin') {
-    os = 'macOS';
-  } else if (platform === 'win32') {
-    os = 'windows';
-  }
-
+  const os = getOS(isRenderer) as keyof PlatformKeyCodes;
   for(const keyval of Object.values(keymap)) {
     if (keyval[os] === keycode) {
       return keyval['linux'];
@@ -186,9 +134,10 @@ export function convertUiohookFromKeycode(keycode: number, isRenderer: boolean):
   return null;
 }
 
-export function getHotKeyName(keycode: number) {
+export function getHotKeyName(keycode: number, isRenderer: boolean) {
+  const os = getOS(isRenderer) as keyof PlatformKeyCodes;
   for(const keyval of Object.values(keymap)) {
-    if (keyval['linux'] === keycode) {
+    if (keyval[os] === keycode) {
       return Object.keys(keymap).find(key => keymap[key] === keyval);
     }
   }

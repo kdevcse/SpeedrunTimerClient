@@ -1,5 +1,3 @@
-import { convertKeycodeFromUiohook } from "../helpers/keycode-converter";
-
 export interface Settings {
   generalSettings: GeneralSettings;
   layoutSettings: LayoutSettings;
