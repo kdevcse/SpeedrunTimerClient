@@ -4,5 +4,6 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { ElectronApi, TimerCommandListener, ELECTRON_API_NAME } from '../common/types/electron-api';
 
 contextBridge.exposeInMainWorld(ELECTRON_API_NAME, {
-  listenForTimerCommands: (listener: TimerCommandListener) => ipcRenderer.on('global-timer', listener)
+  listenForTimerCommands: (listener: TimerCommandListener) => ipcRenderer.on('global-timer', listener),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
 } as ElectronApi);
