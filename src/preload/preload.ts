@@ -5,5 +5,12 @@ import { ElectronApi, TimerCommandListener, ELECTRON_API_NAME } from '../common/
 
 contextBridge.exposeInMainWorld(ELECTRON_API_NAME, {
   listenForTimerCommands: (listener: TimerCommandListener) => ipcRenderer.on('global-timer', listener),
-  getSettings: () => ipcRenderer.invoke('get-settings'),
+  getSettings: async () => { 
+    const settings = await ipcRenderer.invoke('get-settings');
+    return settings;
+  },
+  setSettings: async (settings) => {
+    const result: boolean = await ipcRenderer.invoke('set-settings', settings);
+    return result;
+  },
 } as ElectronApi);

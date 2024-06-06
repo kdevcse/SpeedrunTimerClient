@@ -9,6 +9,7 @@ export interface ElectronApiWindow extends Window {
 export interface ElectronApi {
   listenForTimerCommands: (listener: TimerCommandListener) => void;
   getSettings(): Promise<Settings>;
+  setSettings(settings: Settings): Promise<boolean>;
 }
 
 export type TimerCommandListener = (_: unknown, event: Electron.IpcRendererEvent) => void;

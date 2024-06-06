@@ -1,9 +1,10 @@
 import { App, BrowserWindow, ipcMain } from "electron";
 import { TimerCommands } from "../common/types/timer-commands";
-import { loadUserSettings } from "./settings";
+import { loadSettings, writeSettings } from "./settings";
 import { uIOhook } from "uiohook-napi";
 import { convertKeycodeFromUiohook } from "../common/helpers/keycode-converter";
 import path from "path";
+import { Settings } from "../common/types/settings-types";
 
 export async function initApp(mainWindow: BrowserWindow, app: App) {
 
@@ -16,13 +17,14 @@ export async function initApp(mainWindow: BrowserWindow, app: App) {
         fullscreenable: true,
         webPreferences: {
           preload: path.join(__dirname, 'preload.js'),
-        }
+          nodeIntegration: true,
+        },
       }
     }
   })
 
   // Load user settings
-  const settings = await loadUserSettings(app);
+  const settings = await loadSettings(app);
   
   uIOhook.on("keydown", (e) => {
     try {
@@ -51,6 +53,15 @@ export async function initApp(mainWindow: BrowserWindow, app: App) {
   uIOhook.start();
 
   ipcMain.handle('get-settings', async () => {
-    return await loadUserSettings(app);
+    return await loadSettings(app);
+  });
+
+  ipcMain.handle('set-settings', async (event, settings: Settings) => {
+    await writeSettings(app, settings).catch((err) => {
+      console.error('Error writing to settings file:', err);
+      return false;
+    });
+
+    return true;
   });
 }
