@@ -4,6 +4,8 @@
       <v-list-item>
         <RouterLink to="/settings" target="_blank">Settings</RouterLink>
       </v-list-item>
+      <v-divider></v-divider>
+      <v-list-item @click="exit">Exit</v-list-item>
     </v-list>
   </v-menu>
   <slot name="activator" :show="show" id="menu-btn"/>
@@ -20,6 +22,9 @@ function show(e: MouseEvent) {
   mousePos.value = [e.clientX, e.clientY];
 }
 
+function exit() {
+  window.close();
+}
 
 </script>
 

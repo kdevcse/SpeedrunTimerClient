@@ -62,6 +62,9 @@ onUnmounted(() => {
   height: 100%;
   width: 100%;
   flex: 1;
+  /*-webkit-user-select: none;
+  user-select: none; /* May want to re-evaluate later */
+  /*-webkit-app-region: drag;*/
 }
 .timer-btns-container {
   display: flex;

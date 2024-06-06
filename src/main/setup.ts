@@ -3,8 +3,24 @@ import { TimerCommands } from "../common/types/timer-commands";
 import { loadUserSettings } from "./settings";
 import { uIOhook } from "uiohook-napi";
 import { convertKeycodeFromUiohook } from "../common/helpers/keycode-converter";
+import path from "path";
 
 export async function initApp(mainWindow: BrowserWindow, app: App) {
+
+  // Handle new child windows
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    return {
+      action: 'allow',
+      overrideBrowserWindowOptions: {
+        frame: true,
+        fullscreenable: true,
+        webPreferences: {
+          preload: path.join(__dirname, 'preload.js'),
+        }
+      }
+    }
+  })
+
   // Load user settings
   const settings = await loadUserSettings(app);
   

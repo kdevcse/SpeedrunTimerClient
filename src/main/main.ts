@@ -19,6 +19,12 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: '#2f3241',
+      symbolColor: '#74b1be',
+      height: 60
+    },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -36,7 +42,7 @@ const createWindow = async () => {
   await initApp(mainWindow, app);
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools(); //TODO: add code to enable DevTools
+  mainWindow.webContents.openDevTools(); //TODO: add code to enable DevTools
 };
 
 // This method will be called when Electron has finished
