@@ -13,4 +13,7 @@ contextBridge.exposeInMainWorld(ELECTRON_API_NAME, {
     const result: boolean = await ipcRenderer.invoke('set-settings', settings);
     return result;
   },
+  openDevTools: () => {
+    ipcRenderer.send('open-dev-tools');
+  },
 } as ElectronApi);

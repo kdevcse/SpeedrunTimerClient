@@ -4,6 +4,7 @@
       <v-list-item>
         <RouterLink to="/settings" target="_blank">Settings</RouterLink>
       </v-list-item>
+      <v-list-item @click="openDevTools">DevTools</v-list-item>
       <v-divider></v-divider>
       <v-list-item @click="exit">Exit</v-list-item>
     </v-list>
@@ -12,6 +13,7 @@
 </template>
 
 <script setup lang="ts">
+import { ElectronApiWindow } from 'src/common/types/electron-api';
 import { ref } from 'vue';
 
 const mousePos = ref<[number, number]>([0, 0]);
@@ -24,6 +26,11 @@ function show(e: MouseEvent) {
 
 function exit() {
   window.close();
+}
+
+function openDevTools() {
+  const electronApiGlobal: ElectronApiWindow = (window as any);
+  electronApiGlobal.electronAPI.openDevTools();
 }
 
 </script>

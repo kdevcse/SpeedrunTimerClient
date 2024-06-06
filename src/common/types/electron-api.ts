@@ -10,6 +10,7 @@ export interface ElectronApi {
   listenForTimerCommands: (listener: TimerCommandListener) => void;
   getSettings(): Promise<Settings>;
   setSettings(settings: Settings): Promise<boolean>;
+  openDevTools(): void;
 }
 
 export type TimerCommandListener = (_: unknown, event: Electron.IpcRendererEvent) => void;

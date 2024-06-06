@@ -1,5 +1,8 @@
 <template>
-  <RouterView/>
+  <RouterView v-if="isSupported"/>
+  <template v-else>
+    <p>Web Workers are not supported in this browser.</p>
+  </template>
 </template>
 
 <script setup lang="ts">

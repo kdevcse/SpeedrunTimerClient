@@ -64,4 +64,9 @@ export async function initApp(mainWindow: BrowserWindow, app: App) {
 
     return true;
   });
+
+  ipcMain.on('open-dev-tools', (event) => {
+    console.log('Opening DevTools');
+    event.sender.openDevTools();
+  });
 }
