@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
 import { initApp } from "./setup";
 
@@ -19,17 +19,14 @@ const createWindow = async () => {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: {
-      color: '#2f3241',
-      symbolColor: '#74b1be',
-      height: 60
-    },
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
     },
   });
+
+  // Remove the default menu bar
+  Menu.setApplicationMenu(null);
 
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {

@@ -33,7 +33,7 @@ onMounted(() => {
   onTimerInit();
   const electronApiGlobal: ElectronApiWindow = (window as any);
   electronApiGlobal.electronAPI.listenForTimerCommands((_, event) => {
-    switch(event as unknown as TimerCommands) {
+    switch (event as unknown as TimerCommands) {
       case TimerCommands.START:
         onTimerStart();
         break;
@@ -43,7 +43,7 @@ onMounted(() => {
       case TimerCommands.RESET:
         onTimerReset();
         break;
-      }
+    }
   });
 });
 
@@ -62,15 +62,14 @@ onUnmounted(() => {
   height: 100%;
   width: 100%;
   flex: 1;
-  /*-webkit-user-select: none;
-  user-select: none; /* May want to re-evaluate later */
-  /*-webkit-app-region: drag;*/
 }
+
 .timer-btns-container {
   display: flex;
   justify-content: center;
   flex-direction: row;
 }
+
 button {
   margin: 0 5px;
   border-radius: 8px;
@@ -83,9 +82,11 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
