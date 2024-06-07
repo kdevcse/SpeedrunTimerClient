@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElectronApiWindow } from 'src/common/types/electron-api';
+import { ElectronApiWindow } from '../../common/types/electron-api';
 import { ref } from 'vue';
 
 const mousePos = ref<[number, number]>([0, 0]);
