@@ -1,6 +1,12 @@
+<template>
+  <RouterView v-if="isSupported"/>
+  <template v-else>
+    <p>Web Workers are not supported in this browser.</p>
+  </template>
+</template>
+
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import Stopwatch from './components/Stopwatch.vue';
 
 const isSupported = ref(false);
 
@@ -10,14 +16,5 @@ onMounted(() => {
 
 </script>
 
-<template>
-  <div>
-    <stopwatch v-if="isSupported"></stopwatch>
-    <div v-else>
-      <p>Sorry, your browser does not support this application</p>
-    </div>
-  </div>
-</template>
-
-<style scoped>
+<style>
 </style>

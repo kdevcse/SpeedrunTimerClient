@@ -6,11 +6,12 @@ export class TimerWorker {
   worker: Worker | undefined;
 
   constructor() {
+    // @ts-ignore: No way around import.meta.env.DEV error but it runs fine
+    const urlStr = import.meta.env.DEV ? '../workers/timer-worker' : 'workers/timer-worker.js';
+    
     // @ts-ignore: No way around import.meta.url error but it runs fine
-    const url = new URL('../workers/timer-worker', import.meta.url);
-    this.worker = new Worker(url, {
-      type: "module"
-    });
+    const url = new URL(urlStr, import.meta.url).href;
+    this.worker = new Worker(url, { type: "module" });
   }
 
   setOnMessageFunc(onMsgFunc: TimerOnMessageFunction) {
