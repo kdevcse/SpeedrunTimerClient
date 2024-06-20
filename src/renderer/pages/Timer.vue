@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import { TimerCommands } from '../../common/types/timer-commands';
 import { ElectronApiWindow } from '../../common/types/electron-api';
@@ -25,12 +25,9 @@ const {
   onTimerStart,
   onTimerStop,
   onTimerReset,
-  onTimerInit,
-  onTimerTeardown
 } = useStopwatch();
 
 onMounted(() => {
-  onTimerInit();
   const electronApiGlobal: ElectronApiWindow = (window as any);
   electronApiGlobal.electronAPI.listenForTimerCommands((_, event) => {
     switch (event as unknown as TimerCommands) {
@@ -45,10 +42,6 @@ onMounted(() => {
         break;
     }
   });
-});
-
-onUnmounted(() => {
-  onTimerTeardown();
 });
 
 </script>

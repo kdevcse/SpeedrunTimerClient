@@ -1,59 +1,34 @@
 import { describe, expect, it, vi, beforeEach, afterEach, Mock } from "vitest";
 import { useStopwatch } from "../../renderer/composables/stopwatch";
 import { waitForTime } from "../helpers/mock-time-helper";
-import  { TimerUpdateMessage, WorkerCommunicator } from "../../renderer/helpers/timer-worker-helper";
-import { onMessageFunc } from "../../renderer/workers/timer-worker";
-
-vi.mock("../../renderer/helpers/timer-worker-helper", () => ({
-  WorkerCommunicator: {
-    postMessageToMainThread: vi.fn(),
-    setOnMessageFunc: vi.fn(),
-  },
-  TimerWorker: vi.fn().mockImplementation(() => {
-    return {
-      setOnMessageFunc: vi.fn(),
-      postMessageToWorker: vi.fn().mockImplementation((data) => {
-        onMessageFunc({
-          data: {
-            command: data.command,
-          },
-        });
-      }),
-      terminate: vi.fn(),
-    };
-  })
-}));
 
 describe("Stopwatch unit tests", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    // Mock requestAnimationFrame and cancelAnimationFrame
+    vi.stubGlobal('requestAnimationFrame', (callback: (timestamp: number) => void) => {
+      return setTimeout(() => {
+        callback(performance.now());
+      }, 16); // 16 ms is the typical duration of a frame
+    });
+    vi.stubGlobal('cancelAnimationFrame', (id: number) => {
+      clearTimeout(id);
+    });
   });
 
   afterEach(() => {
     vi.clearAllTimers();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it("Timer start, stop, and reset", async () => {
     const {
       timerTxt,
-      onTimerInit,
-      onTimerTeardown,
       onTimerStart,
       onTimerStop,
       onTimerReset,
-      updateTimerTxtFromWorkerMsg,
     } = useStopwatch();
-
-    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
-      updateTimerTxtFromWorkerMsg({
-        data: {
-          timerTxt: data.timerTxt,
-        },
-      });
-    });
-
-    onTimerInit();
 
     onTimerStart();
     await vi.advanceTimersByTimeAsync(10);
@@ -72,22 +47,10 @@ describe("Stopwatch unit tests", () => {
 
     expect(vi.getTimerCount(), "A timer still exists").toEqual(0);
     expect(timerTxt.value).toEqual("00:00:00.000");
-
-    onTimerTeardown();
   });
 
   it("Prevent duplicate start timers", async () => {
-    const { timerTxt, onTimerInit, onTimerStart, onTimerReset, onTimerTeardown, updateTimerTxtFromWorkerMsg } = useStopwatch();
-
-    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
-      updateTimerTxtFromWorkerMsg({
-        data: {
-          timerTxt: data.timerTxt,
-        },
-      });
-    });
-
-    onTimerInit();
+    const { timerTxt, onTimerStart, onTimerReset } = useStopwatch();
 
     onTimerStart();
     await vi.advanceTimersByTimeAsync(10);
@@ -103,23 +66,10 @@ describe("Stopwatch unit tests", () => {
 
     onTimerReset();
     await vi.advanceTimersByTimeAsync(10);
-
-    onTimerTeardown();
   });
 
   it("Ensure timer increments appropriately", async () => {
-    const { timerTxt, onTimerInit, onTimerTeardown, onTimerStart, onTimerReset, updateTimerTxtFromWorkerMsg } = useStopwatch();
-
-    (WorkerCommunicator.postMessageToMainThread as Mock).mockImplementation((data: TimerUpdateMessage) => {
-      updateTimerTxtFromWorkerMsg({
-        data: {
-          timerTxt: data.timerTxt,
-        },
-      });
-    });
-
-    onTimerInit();
-
+    const { timerTxt, onTimerStart, onTimerReset } = useStopwatch();
     vi.setSystemTime(vi.getRealSystemTime());
 
     onTimerStart();
@@ -141,7 +91,5 @@ describe("Stopwatch unit tests", () => {
 
     onTimerReset();
     await vi.advanceTimersByTimeAsync(10);
-
-    onTimerTeardown();
   });
 });
