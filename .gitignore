@@ -94,3 +94,7 @@ dist
 
 # vite timestamps
 vite.config.js.timestamp*
+
+# LiveSplit
+src/livesplit_core.wasm
+src/livesplit-core
