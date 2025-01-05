@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { getDefaultSettings } from '../common/helpers/settings-helper';
 import { onMounted } from 'vue';
 import { GlobalHotKeyActions, HotKeySettings, Settings } from '../common/types/settings-types';
@@ -28,9 +28,9 @@ import { getHotKeyName } from '../common/helpers/keycode-converter';
 
 const emit = defineEmits(['updateSettings']);
 
-const props = defineProps({
-  settings: Object as PropType<Settings>,
-});
+const props = defineProps<{
+  settings: Settings;
+}>();
 
 onMounted(() => {
   console.log('render');
@@ -45,11 +45,11 @@ const configuredHotKeys = computed(() => {
     return [];
   }
 
-  return Object.keys(data).map((key: keyof GlobalHotKeyActions) => {
+  return Object.keys(data).map((key) => {
     return {
-      name: key.toUpperCase(),
-      value: getHotKeyName(data[key], true),
-      key: key,
+      name: (key as keyof GlobalHotKeyActions).toUpperCase(),
+      value: getHotKeyName(data[key as keyof GlobalHotKeyActions], true),
+      key: key as keyof GlobalHotKeyActions,
     };
   });
 });

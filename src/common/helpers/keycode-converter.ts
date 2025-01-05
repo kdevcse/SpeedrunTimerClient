@@ -1,8 +1,8 @@
 import { getOS } from "./utilities";
 
 type PlatformKeyCodes = {
-  linux: number;
-  macOS: number;
+  linux: number | null;
+  macOS: number | null;
   windows: number | null;
 };
 
@@ -111,15 +111,15 @@ const keymap: KeyMap = {
 };
 
 // uiohook uses linux keycodes, so we need to convert them to the appropriate keycodes for the current platform
-export function convertKeycodeFromUiohook(keycode: number, isRenderer: boolean): number | null {
+export function convertKeycodeFromUiohook(keycode: number, isRenderer: boolean): number {
   const os = getOS(isRenderer) as keyof PlatformKeyCodes;
   for(const keyval of Object.values(keymap)) {
     if (keyval['linux'] === keycode) {
-      return keyval[os];
+      return keyval[os] ?? -1;
     }
   }
 
-  return null;
+  return -1;
 }
 
 // uiohook uses linux keycodes, so we need to convert them to the appropriate keycodes for the current platform

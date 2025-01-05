@@ -1,7 +1,7 @@
 <template>
   <ContextNavMenu>
     <template #activator="{ show }">
-      <div class="timer-container" @contextmenu="show">
+      <div class="timer-container" @contextmenu="onRightClick(show, $event)">
         <p>{{ timerTxt }}</p>
         <div class="timer-btns-container">
           <button @mousedown="onTimerStart">Start</button>
@@ -16,7 +16,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-import { TimerCommands } from '../common/types/timer-commands';
 //import { ElectronApiWindow } from '../common/types/electron-api';
 import ContextNavMenu from '../components/ContextNavMenu.vue';
 import { register } from '@tauri-apps/plugin-global-shortcut';
@@ -43,7 +42,7 @@ onMounted(async () => {
         break;
     }
   });*/
-  await register('CommandOrControl+1', () => {
+  await register(['CommandOrControl+Shift+C', 'Alt+A'], () => {
     onTimerStart();
     console.log('Start triggered');
   });
@@ -56,6 +55,11 @@ onMounted(async () => {
     console.log('Reset triggered');
   });
 });
+
+function onRightClick(show: (e: MouseEvent) => void, event: MouseEvent) {
+  show(event);
+  event.preventDefault();
+};
 
 </script>
 

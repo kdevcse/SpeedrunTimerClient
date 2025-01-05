@@ -38,16 +38,15 @@ import GeneralSettings from '../components/GeneralSettings.vue';
 import HotKeySettings from '../components/HotKeySettings.vue';
 import LayoutSettings from '../components/LayoutSettings.vue';
 import { Settings } from '../common/types/settings-types';
+import { getDefaultSettings } from '../common/helpers/settings-helper.ts';
 import { onMounted } from 'vue';
-import { ElectronApiWindow } from '../common/types/electron-api';
 
 const tab = ref("1");
-const initialSettings = ref<Settings>(null);
-const settings = ref<Settings>(null);
+const initialSettings = ref<Settings>(getDefaultSettings(true));
+const settings = ref<Settings>(getDefaultSettings(true));
 
 onMounted(async () => {
-  const electronApiGlobal: ElectronApiWindow = (window as any);
-  initialSettings.value = await electronApiGlobal.electronAPI.getSettings();
+  initialSettings.value = getDefaultSettings(true); //set settings here in the future
   settings.value = { ...initialSettings.value };
 });
 
