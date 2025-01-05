@@ -5,6 +5,9 @@
   "description": "My Electron application description",
   "main": ".vite/build/main.js",
   "scripts": {
+    "build:core": "node buildLiveSplitCore.js",
+    "build:core:release": "node buildLiveSplitCore.js --release",
+    "build:core:deploy": "node buildLiveSplitCore.js --max-opt --nightly",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
