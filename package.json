@@ -1,54 +1,29 @@
 {
-  "name": "speedrun-timer",
-  "productName": "speedrun-timer",
-  "version": "1.0.0",
-  "description": "My Electron application description",
-  "main": ".vite/build/main.js",
+  "name": "speedruntimertauriclient",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx .",
-    "test": "vitest"
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-global-shortcut": "^2.2.0",
+    "@tauri-apps/plugin-opener": "^2",
+    "keycode": "^2.2.1",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "vue-simple-context-menu": "^4.1.0",
+    "vuetify": "^3.7.6"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^7.4.0",
-    "@electron-forge/maker-deb": "^7.4.0",
-    "@electron-forge/maker-rpm": "^7.4.0",
-    "@electron-forge/maker-squirrel": "^7.4.0",
-    "@electron-forge/maker-zip": "^7.4.0",
-    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
-    "@electron-forge/plugin-fuses": "^7.4.0",
-    "@electron-forge/plugin-vite": "^7.4.0",
-    "@electron/fuses": "^1.8.0",
-    "@mdi/font": "^7.4.47",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "@vitejs/plugin-vue": "^5.0.5",
-    "dotenv": "^16.4.5",
-    "electron": "^30.0.9",
-    "eslint": "^8.57.0",
-    "eslint-plugin-import": "^2.29.1",
-    "glob": "^10.4.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.12",
-    "vitest": "^1.6.0"
-  },
-  "keywords": [],
-  "author": {
-    "name": "Kev",
-    "email": "klewiscse@gmail.com"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
-    "keycode": "^2.2.1",
-    "uiohook-napi": "^1.5.4",
-    "vue": "^3.4.27",
-    "vue-router": "^4.3.2",
-    "vue-simple-context-menu": "^4.1.0",
-    "vuetify": "^3.6.8"
+    "@tauri-apps/cli": "^2",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3",
+    "vue-tsc": "^2.1.10"
   }
 }
