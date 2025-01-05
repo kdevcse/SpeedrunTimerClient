@@ -16,9 +16,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-import { TimerCommands } from '../../common/types/timer-commands';
-import { ElectronApiWindow } from '../../common/types/electron-api';
+import { TimerCommands } from '../common/types/timer-commands';
+//import { ElectronApiWindow } from '../common/types/electron-api';
 import ContextNavMenu from '../components/ContextNavMenu.vue';
+import { register } from '@tauri-apps/plugin-global-shortcut';
 
 const {
   timerTxt,
@@ -27,8 +28,8 @@ const {
   onTimerReset,
 } = useStopwatch();
 
-onMounted(() => {
-  const electronApiGlobal: ElectronApiWindow = (window as any);
+onMounted(async () => {
+  /*const electronApiGlobal: ElectronApiWindow = (window as any);
   electronApiGlobal.electronAPI.listenForTimerCommands((_, event) => {
     switch (event as unknown as TimerCommands) {
       case TimerCommands.START:
@@ -41,6 +42,18 @@ onMounted(() => {
         onTimerReset();
         break;
     }
+  });*/
+  await register('CommandOrControl+1', () => {
+    onTimerStart();
+    console.log('Start triggered');
+  });
+  await register('CommandOrControl+2', () => {
+    onTimerStop();
+    console.log('Stop triggered');
+  });
+  await register('CommandOrControl+3', () => {
+    onTimerReset();
+    console.log('Reset triggered');
   });
 });
 

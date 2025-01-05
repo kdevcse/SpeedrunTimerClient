@@ -37,9 +37,9 @@ import { ref, computed } from 'vue';
 import GeneralSettings from '../components/GeneralSettings.vue';
 import HotKeySettings from '../components/HotKeySettings.vue';
 import LayoutSettings from '../components/LayoutSettings.vue';
-import { Settings } from '../../common/types/settings-types';
+import { Settings } from '../common/types/settings-types';
 import { onMounted } from 'vue';
-import { ElectronApiWindow } from '../../common/types/electron-api';
+import { ElectronApiWindow } from '../common/types/electron-api';
 
 const tab = ref("1");
 const initialSettings = ref<Settings>(null);
@@ -60,7 +60,7 @@ function resetSettings() {
 }
 
 async function saveSettings() {
-  const electronApiGlobal: ElectronApiWindow = (window as any);
+  /*const electronApiGlobal: ElectronApiWindow = (window as any);
   const normalizedSettings = JSON.parse(JSON.stringify(settings.value));
   const success = await electronApiGlobal.electronAPI.setSettings(normalizedSettings);
 
@@ -69,7 +69,7 @@ async function saveSettings() {
   } else {
     console.error('Failed to save settings');
     settings.value = { ...initialSettings.value };
-  }
+  }*/
 }
 
 function exit() {

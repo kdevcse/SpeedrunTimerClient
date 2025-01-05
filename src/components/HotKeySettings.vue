@@ -21,10 +21,10 @@
 
 <script setup lang="ts">
 import { PropType, computed, ref } from 'vue';
-import { getDefaultSettings } from '../../common/helpers/settings-helper';
+import { getDefaultSettings } from '../common/helpers/settings-helper';
 import { onMounted } from 'vue';
-import { GlobalHotKeyActions, HotKeySettings, Settings } from '../../common/types/settings-types';
-import { getHotKeyName } from '../../common/helpers/keycode-converter';
+import { GlobalHotKeyActions, HotKeySettings, Settings } from '../common/types/settings-types';
+import { getHotKeyName } from '../common/helpers/keycode-converter';
 
 const emit = defineEmits(['updateSettings']);
 
