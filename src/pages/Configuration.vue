@@ -40,7 +40,6 @@ import LayoutSettings from '../components/LayoutSettings.vue';
 import { Settings } from '../common/types/settings-types';
 import { getDefaultSettings } from '../common/helpers/settings-helper.ts';
 import { useSettings } from '../composables/settings.ts';
-import { load } from '@tauri-apps/plugin-store';
 
 const enum ConfigurationTabs {
   General = '1',
@@ -51,8 +50,7 @@ const tab = ref(ConfigurationTabs.General);
 const { settings, loadSettings, setSettings, saveSettings, resetSettings } = useSettings();
 
 onMounted(async () => {
-  const store = await load('settings.json', { autoSave: false, createNew: true });
-  await loadSettings(store);
+  await loadSettings();
 });
 
 const settingsHaveChanged = computed(() => {
@@ -64,8 +62,7 @@ function onSettingsReset() {
 }
 
 async function onSettingsSave() {
-  const store = await load('settings.json', { autoSave: false, createNew: true });
-  await saveSettings(store);
+  await saveSettings();
 }
 
 function exit() {

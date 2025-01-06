@@ -18,7 +18,6 @@ import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import ContextNavMenu from '../components/ContextNavMenu.vue';
 import { useSettings } from '../composables/settings';
-import { load } from '@tauri-apps/plugin-store';
 
 const { settings, loadSettings } = useSettings();
 const {
@@ -30,9 +29,12 @@ const {
 } = useStopwatch();
 
 onMounted(async () => {
-  const store = await load('settings.json', { autoSave: false, createNew: true });
-  await loadSettings(store);
-  await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
+  try {
+    await loadSettings();
+    await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
+  } catch (error) {
+    console.error('Failed to load settings', error);
+  }
 });
 
 function onRightClick(show: (e: MouseEvent) => void, event: MouseEvent) {
