@@ -23,3 +23,7 @@ export interface GeneralSettings {
 export interface LayoutSettings {
   layout: string;
 }
+
+export enum SETTINGS_ACCESS_KEY {
+  USER_SETTINGS = 'USER_SETTINGS',
+}

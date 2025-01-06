@@ -1,4 +1,6 @@
 import { ref } from 'vue';
+import { register } from '@tauri-apps/plugin-global-shortcut';
+import { HotKeySettings } from '../common/types/settings-types';
 
 export function useStopwatch() {
   const timerTxt = ref('00:00:00.000');
@@ -92,11 +94,27 @@ export function useStopwatch() {
     return `${h}:${min}:${s}.${ms}`;
   }
 
+  async function registerGlobalTimerShortcuts(hotkeySettings: HotKeySettings) {
+    await register(hotkeySettings.globalHotkeys.start.toString(), () => {
+      onTimerStart();
+      console.log('Start triggered');
+    });
+    await register(hotkeySettings.globalHotkeys.start.toString(), () => {
+      onTimerStop();
+      console.log('Stop triggered');
+    });
+    await register(hotkeySettings.globalHotkeys.start.toString(), () => {
+      onTimerReset();
+      console.log('Reset triggered');
+    });
+  }
+
   return {
     timerTxt,
     onTimerStart,
     onTimerStop,
     onTimerReset,
+    registerGlobalTimerShortcuts
   };
 }
 

@@ -16,44 +16,23 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-//import { ElectronApiWindow } from '../common/types/electron-api';
 import ContextNavMenu from '../components/ContextNavMenu.vue';
-import { register } from '@tauri-apps/plugin-global-shortcut';
+import { useSettings } from '../composables/settings';
+import { load } from '@tauri-apps/plugin-store';
 
+const { settings, loadSettings } = useSettings();
 const {
   timerTxt,
   onTimerStart,
   onTimerStop,
   onTimerReset,
+  registerGlobalTimerShortcuts
 } = useStopwatch();
 
 onMounted(async () => {
-  /*const electronApiGlobal: ElectronApiWindow = (window as any);
-  electronApiGlobal.electronAPI.listenForTimerCommands((_, event) => {
-    switch (event as unknown as TimerCommands) {
-      case TimerCommands.START:
-        onTimerStart();
-        break;
-      case TimerCommands.STOP:
-        onTimerStop();
-        break;
-      case TimerCommands.RESET:
-        onTimerReset();
-        break;
-    }
-  });*/
-  await register(['CommandOrControl+Shift+C', 'Alt+A'], () => {
-    onTimerStart();
-    console.log('Start triggered');
-  });
-  await register('CommandOrControl+2', () => {
-    onTimerStop();
-    console.log('Stop triggered');
-  });
-  await register('CommandOrControl+3', () => {
-    onTimerReset();
-    console.log('Reset triggered');
-  });
+  const store = await load('settings.json', { autoSave: false, createNew: true });
+  await loadSettings(store);
+  await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
 });
 
 function onRightClick(show: (e: MouseEvent) => void, event: MouseEvent) {

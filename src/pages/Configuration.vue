@@ -4,27 +4,27 @@
       <v-list-item title="Settings"></v-list-item>
       <v-divider></v-divider>
       <v-tabs v-model="tab" direction="vertical">
-        <v-tab text="General" value="1"></v-tab>
-        <v-tab text="Hot Keys" value="2"></v-tab>
-        <v-tab text="Layout" value="3"></v-tab>
+        <v-tab text="General" :value=ConfigurationTabs.General></v-tab>
+        <v-tab text="Hot Keys" :value=ConfigurationTabs.HotKeys></v-tab>
+        <v-tab text="Layout" :value=ConfigurationTabs.Layout></v-tab>
       </v-tabs>
       <v-divider></v-divider>
       <v-list-item title="Exit" @click="exit"></v-list-item>
     </v-navigation-drawer>
     <v-main>
       <v-tabs-window v-model="tab" class="config-container">
-        <v-tabs-window-item value="1">
+        <v-tabs-window-item :value=ConfigurationTabs.General>
           <GeneralSettings/>
         </v-tabs-window-item>
-        <v-tabs-window-item value="2">
+        <v-tabs-window-item :value=ConfigurationTabs.HotKeys>
           <HotKeySettings @update-settings="onSettingsUpdate" :settings="settings"/>
         </v-tabs-window-item>
-        <v-tabs-window-item value="3">
+        <v-tabs-window-item :value=ConfigurationTabs.Layout>
           <LayoutSettings/>
         </v-tabs-window-item>
         <div v-if="settingsHaveChanged" class="validation-container">
-          <v-btn @click="resetSettings">Cancel</v-btn>
-          <v-btn @click="saveSettings" color="primary">Save</v-btn>
+          <v-btn @click="onSettingsReset">Cancel</v-btn>
+          <v-btn @click="onSettingsSave" color="primary">Save</v-btn>
         </div>
       </v-tabs-window>
     </v-main>
@@ -33,42 +33,39 @@
 
 <script setup lang="ts">
 //This link shows how to make a collapsable drawer https://vuetifyjs.com/en/components/navigation-drawers/#expand-on-hover
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import GeneralSettings from '../components/GeneralSettings.vue';
 import HotKeySettings from '../components/HotKeySettings.vue';
 import LayoutSettings from '../components/LayoutSettings.vue';
 import { Settings } from '../common/types/settings-types';
 import { getDefaultSettings } from '../common/helpers/settings-helper.ts';
-import { onMounted } from 'vue';
+import { useSettings } from '../composables/settings.ts';
+import { load } from '@tauri-apps/plugin-store';
 
-const tab = ref("1");
-const initialSettings = ref<Settings>(getDefaultSettings(true));
-const settings = ref<Settings>(getDefaultSettings(true));
+const enum ConfigurationTabs {
+  General = '1',
+  HotKeys = '2',
+  Layout = '3',
+}
+const tab = ref(ConfigurationTabs.General);
+const { settings, loadSettings, setSettings, saveSettings, resetSettings } = useSettings();
 
 onMounted(async () => {
-  initialSettings.value = getDefaultSettings(true); //set settings here in the future
-  settings.value = { ...initialSettings.value };
+  const store = await load('settings.json', { autoSave: false, createNew: true });
+  await loadSettings(store);
 });
 
 const settingsHaveChanged = computed(() => {
-  return JSON.stringify(initialSettings.value) !== JSON.stringify(settings.value);
+  return JSON.stringify(getDefaultSettings(true)) !== JSON.stringify(settings.value); //TODO: Need to change how this works
 });
 
-function resetSettings() {
-  settings.value = { ...initialSettings.value };
+function onSettingsReset() {
+  resetSettings();
 }
 
-async function saveSettings() {
-  /*const electronApiGlobal: ElectronApiWindow = (window as any);
-  const normalizedSettings = JSON.parse(JSON.stringify(settings.value));
-  const success = await electronApiGlobal.electronAPI.setSettings(normalizedSettings);
-
-  if (success) {
-    initialSettings.value = { ...settings.value };
-  } else {
-    console.error('Failed to save settings');
-    settings.value = { ...initialSettings.value };
-  }*/
+async function onSettingsSave() {
+  const store = await load('settings.json', { autoSave: false, createNew: true });
+  await saveSettings(store);
 }
 
 function exit() {
@@ -76,7 +73,7 @@ function exit() {
 }
 
 function onSettingsUpdate(updatedSettings: Settings) {
-  settings.value = { ...updatedSettings };
+  setSettings(updatedSettings);
 };
 
 </script>
