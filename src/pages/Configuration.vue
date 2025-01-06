@@ -48,13 +48,15 @@ const enum ConfigurationTabs {
 }
 const tab = ref(ConfigurationTabs.General);
 const { settings, loadSettings, setSettings, saveSettings, resetSettings } = useSettings();
+let initSettings = getDefaultSettings(true);
 
 onMounted(async () => {
-  await loadSettings();
+  initSettings = await loadSettings() ?? initSettings;
 });
 
 const settingsHaveChanged = computed(() => {
-  return JSON.stringify(getDefaultSettings(true)) !== JSON.stringify(settings.value); //TODO: Need to change how this works
+  console.log(JSON.stringify(initSettings), JSON.stringify(settings.value)); //TODO: Remove after debugging
+  return JSON.stringify(initSettings) !== JSON.stringify(settings.value);
 });
 
 function onSettingsReset() {

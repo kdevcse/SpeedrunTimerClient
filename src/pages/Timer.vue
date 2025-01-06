@@ -42,7 +42,6 @@ async function onRightClick() {
       {
         text: 'Settings',
         action: () => {
-
           const settingsWindow = new WebviewWindow('settings', {
             url: '#/settings',
             title: 'Settings',
@@ -55,6 +54,10 @@ async function onRightClick() {
 
           settingsWindow.once('tauri://created', () => {
             //settingsWindow.show();
+          });
+
+          settingsWindow.once('tauri://close-requested', async () => {
+            await loadSettings();
           });
 
           settingsWindow.once('tauri://error', (error) => {
