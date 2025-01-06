@@ -1,3 +1,6 @@
+/**
+@deprecated
+*/
 <template>
   <v-menu v-model:model-value="contxtMenu" activator="#menu-btn" :target="mousePos">
     <v-list>
@@ -42,6 +45,7 @@ async function openSettings() {
     height: 600,
     resizable: false,
     visible: true,
+    alwaysOnTop: false,
     parent: getCurrentWindow(),
   });
 

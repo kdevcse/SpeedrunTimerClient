@@ -1,23 +1,21 @@
 <template>
-  <ContextNavMenu>
-    <template #activator="{ show }">
-      <div class="timer-container" @contextmenu="onRightClick(show, $event)">
-        <p>{{ timerTxt }}</p>
-        <div class="timer-btns-container">
-          <button @mousedown="onTimerStart">Start</button>
-          <button @mousedown="onTimerStop">Stop</button>
-          <button @mousedown="onTimerReset">Reset</button>
-        </div>
-      </div>
-    </template>
-  </ContextNavMenu>
+  <div class="timer-container" @contextmenu="onRightClick">
+    <p>{{ timerTxt }}</p>
+    <div class="timer-btns-container">
+      <button @mousedown="onTimerStart">Start</button>
+      <button @mousedown="onTimerStop">Stop</button>
+      <button @mousedown="onTimerReset">Reset</button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
-import ContextNavMenu from '../components/ContextNavMenu.vue';
 import { useSettings } from '../composables/settings';
+import { Submenu } from '@tauri-apps/api/menu';
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 const { settings, loadSettings } = useSettings();
 const {
@@ -37,9 +35,49 @@ onMounted(async () => {
   }
 });
 
-function onRightClick(show: (e: MouseEvent) => void, event: MouseEvent) {
-  show(event);
-  event.preventDefault();
+async function onRightClick() {
+  const contextMenu = (await Submenu.new({
+    id: 'timer-context-menu',
+    items: [
+      {
+        text: 'Settings',
+        action: () => {
+
+          const settingsWindow = new WebviewWindow('settings', {
+            url: '#/settings',
+            title: 'Settings',
+            width: 800,
+            height: 600,
+            resizable: false,
+            visible: true,
+            parent: getCurrentWindow(),
+          });
+
+          settingsWindow.once('tauri://created', () => {
+            //settingsWindow.show();
+          });
+
+          settingsWindow.once('tauri://error', (error) => {
+            console.error('Failed to open settings', error);
+          });
+        },
+      },
+      {
+        text: 'DevTools',
+        action: () => {
+          // openDevTools();
+        },
+      },
+      {
+        text: 'Exit',
+        action: () => {
+          getCurrentWindow().close();
+        },
+      },
+    ],
+    text: 'Context Menu'
+  }));
+  await contextMenu.popup(undefined, getCurrentWindow());
 };
 
 </script>
