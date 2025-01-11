@@ -1,0 +1,101 @@
+import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { useStopwatch } from "../stopwatch";
+
+
+export async function waitForTime(timeToWait: number) {
+  await vi.runOnlyPendingTimersAsync();
+  vi.setSystemTime(new Date(vi.getMockedSystemTime() as Date).getTime() + timeToWait);
+  await vi.advanceTimersToNextTimerAsync();
+}
+
+describe("Stopwatch unit tests", () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    // Mock requestAnimationFrame and cancelAnimationFrame
+    vi.stubGlobal('requestAnimationFrame', (callback: (timestamp: number) => void) => {
+      return setTimeout(() => {
+        callback(performance.now());
+      }, 16); // 16 ms is the typical duration of a frame
+    });
+    vi.stubGlobal('cancelAnimationFrame', (id: number) => {
+      clearTimeout(id);
+    });
+  });
+
+  afterEach(() => {
+    vi.clearAllTimers();
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it("Timer start, stop, and reset", async () => {
+    const {
+      timerTxt,
+      onTimerStart,
+      onTimerStop,
+      onTimerReset,
+    } = useStopwatch();
+
+    onTimerStart();
+    await vi.advanceTimersByTimeAsync(10);
+
+    expect(timerTxt.value).toEqual("00:00:00.010");
+    expect(vi.getTimerCount(), "The timer was not started").toEqual(1);
+
+    onTimerStop();
+    await vi.advanceTimersByTimeAsync(10);
+
+    expect(vi.getTimerCount(), "A timer still exists").toEqual(0);
+    expect(timerTxt.value).toEqual("00:00:00.010");
+
+    onTimerReset();
+    await vi.advanceTimersByTimeAsync(10);
+
+    expect(vi.getTimerCount(), "A timer still exists").toEqual(0);
+    expect(timerTxt.value).toEqual("00:00:00.000");
+  });
+
+  it("Prevent duplicate start timers", async () => {
+    const { timerTxt, onTimerStart, onTimerReset } = useStopwatch();
+
+    onTimerStart();
+    await vi.advanceTimersByTimeAsync(10);
+
+    expect(vi.getTimerCount(), "The timer was not started").toEqual(1);
+    expect(timerTxt.value).toEqual("00:00:00.010");
+
+    onTimerStart();
+    await vi.advanceTimersByTimeAsync(10);
+
+    expect(vi.getTimerCount(), "Invalid number of timers").toEqual(1);
+    expect(timerTxt.value).toEqual("00:00:00.020");
+
+    onTimerReset();
+    await vi.advanceTimersByTimeAsync(10);
+  });
+
+  it("Ensure timer increments appropriately", async () => {
+    const { timerTxt, onTimerStart, onTimerReset } = useStopwatch();
+    vi.setSystemTime(vi.getRealSystemTime());
+
+    onTimerStart();
+    await waitForTime(15);
+
+    expect(timerTxt.value).toEqual("00:00:00.025");
+
+    await waitForTime(2000);
+
+    expect(timerTxt.value).toEqual("00:00:02.025");
+
+    await waitForTime(2000 * 60);
+
+    expect(timerTxt.value).toEqual("00:02:02.025");
+
+    await waitForTime(1000 * 60 * 60);
+
+    expect(timerTxt.value).toEqual("01:02:02.025");
+
+    onTimerReset();
+    await vi.advanceTimersByTimeAsync(10);
+  });
+});
