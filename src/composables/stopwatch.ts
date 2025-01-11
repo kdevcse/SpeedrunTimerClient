@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { register } from '@tauri-apps/plugin-global-shortcut';
+import { register, unregister } from '@tauri-apps/plugin-global-shortcut';
 import { HotKeySettings } from '../common/types/settings-types';
 import { getHotKeyName } from '../common/helpers/keycode-converter';
 import { getDefaultSettings } from '../common/helpers/settings-helper';
@@ -116,12 +116,24 @@ export function useStopwatch() {
     });
   }
 
+  async function unregisterGlobalTimerShortcuts(hotkeySettings: HotKeySettings) {
+    const defaultHotKeys = getDefaultSettings(true).hotkeySettings.globalHotkeys;
+    const startKey = getHotKeyName(hotkeySettings.globalHotkeys.start, true) ?? defaultHotKeys.start.toString();
+    const stopKey = getHotKeyName(hotkeySettings.globalHotkeys.stop, true) ?? defaultHotKeys.stop.toString();
+    const resetKey = getHotKeyName(hotkeySettings.globalHotkeys.reset, true) ?? defaultHotKeys.reset.toString();
+
+    await unregister(startKey);
+    await unregister(stopKey);
+    await unregister(resetKey);
+  }
+
   return {
     timerTxt,
     onTimerStart,
     onTimerStop,
     onTimerReset,
-    registerGlobalTimerShortcuts
+    registerGlobalTimerShortcuts,
+    unregisterGlobalTimerShortcuts
   };
 }
 

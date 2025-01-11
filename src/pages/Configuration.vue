@@ -54,7 +54,7 @@ const {
   loadSettings, 
   setSettings, 
   saveSettings,
-  SAVED_EVENT_NAME
+  SAVED_SETTINGS_EVENT
 } = useSettings();
 let initSettings: Settings;
 
@@ -79,7 +79,7 @@ async function onSettingsSave() {
   if (didSave) {
     settings.value = await getSettings();
     initSettings = settings.value;
-    await getCurrentWindow().emit(SAVED_EVENT_NAME);
+    await getCurrentWindow().emit(SAVED_SETTINGS_EVENT);
   }
 }
 

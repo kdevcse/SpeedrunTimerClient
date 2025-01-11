@@ -59,10 +59,10 @@ export function useSettings() {
     await settingsStore.close();
   }
 
-  const SAVED_EVENT_NAME = 'settings-saved';
+  const SAVED_SETTINGS_EVENT = 'SETTINGS_SAVED';
 
   return {
-    SAVED_EVENT_NAME,
+    SAVED_SETTINGS_EVENT,
     settingsStore,
     loadSettings,
     getSettings,

@@ -10,35 +10,75 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useStopwatch } from '../composables/stopwatch';
 import { useSettings } from '../composables/settings';
 import { Submenu } from '@tauri-apps/api/menu';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { getDefaultSettings } from '../common/helpers/settings-helper';
+import { Settings } from '../common/types/settings-types';
 
-const { 
-  loadSettings, 
+const settings = ref<Settings>(getDefaultSettings(true));
+
+const {
+  loadSettings,
   getSettings,
-  SAVED_EVENT_NAME
+  SAVED_SETTINGS_EVENT
 } = useSettings();
+
 const {
   timerTxt,
   onTimerStart,
   onTimerStop,
   onTimerReset,
-  registerGlobalTimerShortcuts
+  registerGlobalTimerShortcuts,
+  unregisterGlobalTimerShortcuts
 } = useStopwatch();
 
 onMounted(async () => {
   try {
     await loadSettings(); // Load settings on startup
-    const settings = await getSettings();
-    await registerGlobalTimerShortcuts(settings.hotkeySettings);
+    settings.value = await getSettings();
+    await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
   } catch (error) {
     console.error('Failed to load settings', error);
   }
 });
+
+async function openSettingsHandler() {
+  // Unregister global timer shortcuts before opening settings
+  await unregisterGlobalTimerShortcuts(settings.value.hotkeySettings);
+
+  // Disable the Timer window
+  await getCurrentWindow().setEnabled(false);
+
+  // Create a new settings window
+  const settingsWindow = new WebviewWindow('settings', {
+    url: '#/settings',
+    title: 'Settings',
+    width: 800,
+    height: 600,
+    resizable: false,
+    visible: true,
+    parent: getCurrentWindow(),
+  });
+
+  // Listen for the  event from the settings window
+  await settingsWindow.listen(SAVED_SETTINGS_EVENT, async () => {
+    settings.value = await getSettings();
+  });
+
+  await settingsWindow.once('tauri://destroyed', async () => {
+    await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
+    await getCurrentWindow().setEnabled(true);
+    await getCurrentWindow().setFocus();
+  });
+
+  await settingsWindow.once('tauri://error', (error) => {
+    console.error('Failed to open settings', error);
+  });
+}
 
 async function onRightClick() {
   const contextMenu = (await Submenu.new({
@@ -47,29 +87,8 @@ async function onRightClick() {
       {
         text: 'Settings',
         action: async () => {
-          const settingsWindow = new WebviewWindow('settings', {
-            url: '#/settings',
-            title: 'Settings',
-            width: 800,
-            height: 600,
-            resizable: false,
-            visible: true,
-            parent: getCurrentWindow(),
-          });
-
-          await settingsWindow.once('tauri://created', () => {
-            //settingsWindow.show();
-          });
-
-          await settingsWindow.listen(SAVED_EVENT_NAME, async () => {
-            const settings = await getSettings();
-            await registerGlobalTimerShortcuts(settings.hotkeySettings);
-          });
-
-          await settingsWindow.once('tauri://error', (error) => {
-            console.error('Failed to open settings', error);
-          });
-        },
+          await openSettingsHandler();
+        }
       },
       {
         text: 'Reload',
