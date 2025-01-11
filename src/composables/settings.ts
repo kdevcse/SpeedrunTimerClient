@@ -1,53 +1,75 @@
 import { load, Store } from '@tauri-apps/plugin-store'; //https://v2.tauri.app/plugin/store
 import { Settings, SETTINGS_ACCESS_KEY } from '../common/types/settings-types';
-import { ref } from 'vue';
 import { getDefaultSettings } from '../common/helpers/settings-helper';
 
+let settingsStore: Store;
+
 export function useSettings() {
-  const settings = ref<Settings>(getDefaultSettings(true));
-  let store: Store;
-
   async function loadSettings() {
-    store = await load('settings.json', { autoSave: false, createNew: true });
+    if (settingsStore) {
+      return;
+    }
 
-    if (!store) {
+    try {
+      settingsStore = await load('settings.json', { autoSave: false });
+    } catch (error) {
+      console.error('Error initializing settings store', error);
+    }
+  }
+
+  async function getSettings() {
+    if (!settingsStore) {
+      console.error('Store not initialized');
+      return getDefaultSettings(true);
+    }
+
+    const settings = await settingsStore.get<{ value: Settings }>(SETTINGS_ACCESS_KEY.USER_SETTINGS);
+    return settings?.value ?? getDefaultSettings(true);
+  }
+
+  async function setSettings(settings: Settings) {
+    if (!settingsStore) {
       console.error('Store not initialized');
       return;
     }
 
-    const settings_result = await store.get<{ value: Settings }>(SETTINGS_ACCESS_KEY.USER_SETTINGS);
-    settings.value = settings_result?.value ?? getDefaultSettings(true);
-    return settings.value;
+    await settingsStore.set(SETTINGS_ACCESS_KEY.USER_SETTINGS, settings);
+  }
+
+  async function resetSettings() {
+    await settingsStore.set(SETTINGS_ACCESS_KEY.USER_SETTINGS, getDefaultSettings(true));
+    await settingsStore.save();
   }
 
   async function saveSettings() {
-    if (!store) {
+    if (!settingsStore) {
+      console.error('Store not initialized');
+      return false;
+    }
+
+    await settingsStore.save();
+    return true;
+  }
+
+  async function teardownSettings() {
+    if (!settingsStore) {
       console.error('Store not initialized');
       return;
     }
 
-    await store.set(SETTINGS_ACCESS_KEY.USER_SETTINGS, settings.value);
-    await store.save();
+    await settingsStore.close();
   }
 
-  function setSettings(newSettings: Settings) {
-    settings.value = { ...newSettings };
-  }
-
-  function resetSettings() {
-    settings.value = { ...getDefaultSettings(true) };
-  }
-
-  function getCurrentSettings() {
-    return settings.value;
-  }
+  const SAVED_EVENT_NAME = 'settings-saved';
 
   return {
-    settings,
+    SAVED_EVENT_NAME,
+    settingsStore,
     loadSettings,
+    getSettings,
     setSettings,
     resetSettings,
     saveSettings,
-    getCurrentSettings
+    teardownSettings
   }
 }

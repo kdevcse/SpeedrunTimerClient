@@ -40,39 +40,56 @@ import LayoutSettings from '../components/LayoutSettings.vue';
 import { Settings } from '../common/types/settings-types';
 import { getDefaultSettings } from '../common/helpers/settings-helper.ts';
 import { useSettings } from '../composables/settings.ts';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 
 const enum ConfigurationTabs {
   General = '1',
   HotKeys = '2',
   Layout = '3',
 }
+const settings = ref<Settings>(getDefaultSettings(true));
 const tab = ref(ConfigurationTabs.General);
-const { settings, loadSettings, setSettings, saveSettings, resetSettings } = useSettings();
-let initSettings = getDefaultSettings(true);
+const { 
+  getSettings, 
+  loadSettings, 
+  setSettings, 
+  saveSettings, 
+  resetSettings,
+  SAVED_EVENT_NAME
+} = useSettings();
+let initSettings: Settings;
 
 onMounted(async () => {
-  initSettings = await loadSettings() ?? initSettings;
+  await loadSettings();
+  settings.value = await getSettings();
+  initSettings = settings.value;
 });
 
 const settingsHaveChanged = computed(() => {
-  console.log(JSON.stringify(initSettings), JSON.stringify(settings.value)); //TODO: Remove after debugging
   return JSON.stringify(initSettings) !== JSON.stringify(settings.value);
 });
 
-function onSettingsReset() {
-  resetSettings();
+async function onSettingsReset() {
+  await resetSettings();
 }
 
 async function onSettingsSave() {
-  await saveSettings();
+  const didSave = await saveSettings();
+
+  if (didSave) {
+    settings.value = await getSettings();
+    initSettings = settings.value;
+    await getCurrentWindow().emit(SAVED_EVENT_NAME);
+  }
 }
 
 function exit() {
   window.close();
 }
 
-function onSettingsUpdate(updatedSettings: Settings) {
-  setSettings(updatedSettings);
+async function onSettingsUpdate(updatedSettings: Settings) {
+  await setSettings(updatedSettings);
+  settings.value = updatedSettings;
 };
 
 </script>

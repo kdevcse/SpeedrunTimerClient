@@ -17,7 +17,11 @@ import { Submenu } from '@tauri-apps/api/menu';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
-const { settings, loadSettings } = useSettings();
+const { 
+  loadSettings, 
+  getSettings,
+  SAVED_EVENT_NAME
+} = useSettings();
 const {
   timerTxt,
   onTimerStart,
@@ -28,8 +32,9 @@ const {
 
 onMounted(async () => {
   try {
-    await loadSettings();
-    await registerGlobalTimerShortcuts(settings.value.hotkeySettings);
+    await loadSettings(); // Load settings on startup
+    const settings = await getSettings();
+    await registerGlobalTimerShortcuts(settings.hotkeySettings);
   } catch (error) {
     console.error('Failed to load settings', error);
   }
@@ -41,7 +46,7 @@ async function onRightClick() {
     items: [
       {
         text: 'Settings',
-        action: () => {
+        action: async () => {
           const settingsWindow = new WebviewWindow('settings', {
             url: '#/settings',
             title: 'Settings',
@@ -52,29 +57,30 @@ async function onRightClick() {
             parent: getCurrentWindow(),
           });
 
-          settingsWindow.once('tauri://created', () => {
+          await settingsWindow.once('tauri://created', () => {
             //settingsWindow.show();
           });
 
-          settingsWindow.once('tauri://close-requested', async () => {
-            await loadSettings();
+          await settingsWindow.listen(SAVED_EVENT_NAME, async () => {
+            const settings = await getSettings();
+            await registerGlobalTimerShortcuts(settings.hotkeySettings);
           });
 
-          settingsWindow.once('tauri://error', (error) => {
+          await settingsWindow.once('tauri://error', (error) => {
             console.error('Failed to open settings', error);
           });
         },
       },
       {
-        text: 'DevTools',
+        text: 'Reload',
         action: () => {
-          // openDevTools();
+          location.reload();
         },
       },
       {
         text: 'Exit',
-        action: () => {
-          getCurrentWindow().close();
+        action: async () => {
+          await getCurrentWindow().close();
         },
       },
     ],

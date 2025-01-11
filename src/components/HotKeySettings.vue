@@ -22,7 +22,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { getDefaultSettings } from '../common/helpers/settings-helper';
-import { onMounted } from 'vue';
 import { GlobalHotKeyActions, HotKeySettings, Settings } from '../common/types/settings-types';
 import { getHotKeyName } from '../common/helpers/keycode-converter';
 
@@ -31,10 +30,6 @@ const emit = defineEmits(['updateSettings']);
 const props = defineProps<{
   settings: Settings;
 }>();
-
-onMounted(() => {
-  console.log('render');
-});
 
 const updatedSettings = ref<HotKeySettings>(getDefaultSettings(true).hotkeySettings);
 const waitingForHotKeyIndex = ref(-1);
@@ -58,7 +53,6 @@ const addHotKey = (index: number, key: keyof GlobalHotKeyActions) => {
   const keydownListner = (event: KeyboardEvent) => {
     waitingForHotKeyIndex.value = -1;
     document.removeEventListener('keydown', keydownListner);
-    console.log('event', event);
 
     emit('updateSettings', {
       ...props.settings,
