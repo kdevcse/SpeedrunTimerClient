@@ -23,8 +23,8 @@ export function useSettings() {
       return getDefaultSettings(true);
     }
 
-    const settings = await settingsStore.get<{ value: Settings }>(SETTINGS_ACCESS_KEY.USER_SETTINGS);
-    return settings?.value ?? getDefaultSettings(true);
+    const settings = await settingsStore.get<Settings>(SETTINGS_ACCESS_KEY.USER_SETTINGS);
+    return settings ?? getDefaultSettings(true);
   }
 
   async function setSettings(settings: Settings) {
@@ -38,7 +38,6 @@ export function useSettings() {
 
   async function resetSettings() {
     await settingsStore.set(SETTINGS_ACCESS_KEY.USER_SETTINGS, getDefaultSettings(true));
-    await settingsStore.save();
   }
 
   async function saveSettings() {

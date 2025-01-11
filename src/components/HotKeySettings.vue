@@ -3,7 +3,7 @@
   <v-form v-if="settings">
     <div class="hot-key-setting-container">
       <v-label>GLOBAL</v-label>
-      <v-switch color="primary" hide-details v-model="updatedSettings.enableGlobalHotkeys"/>
+      <v-switch color="primary" hide-details v-model="props.settings.hotkeySettings.enableGlobalHotkeys"/>
     </div>
     <template v-for="(chk, index) in configuredHotKeys">
       <div class="hot-key-setting-container">
@@ -21,8 +21,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { getDefaultSettings } from '../common/helpers/settings-helper';
-import { GlobalHotKeyActions, HotKeySettings, Settings } from '../common/types/settings-types';
+import { GlobalHotKeyActions, Settings } from '../common/types/settings-types';
 import { getHotKeyName } from '../common/helpers/keycode-converter';
 
 const emit = defineEmits(['updateSettings']);
@@ -31,7 +30,6 @@ const props = defineProps<{
   settings: Settings;
 }>();
 
-const updatedSettings = ref<HotKeySettings>(getDefaultSettings(true).hotkeySettings);
 const waitingForHotKeyIndex = ref(-1);
 const configuredHotKeys = computed(() => {
   const data: GlobalHotKeyActions = props.settings.hotkeySettings?.globalHotkeys;

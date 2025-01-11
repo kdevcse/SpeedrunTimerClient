@@ -53,8 +53,7 @@ const {
   getSettings, 
   loadSettings, 
   setSettings, 
-  saveSettings, 
-  resetSettings,
+  saveSettings,
   SAVED_EVENT_NAME
 } = useSettings();
 let initSettings: Settings;
@@ -70,7 +69,8 @@ const settingsHaveChanged = computed(() => {
 });
 
 async function onSettingsReset() {
-  await resetSettings();
+  await setSettings(initSettings);
+  settings.value = initSettings;
 }
 
 async function onSettingsSave() {
