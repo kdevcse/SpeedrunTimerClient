@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build:core": "node buildLiveSplitCore.js",
+    "build:core:release": "node buildLiveSplitCore.js --release",
+    "build:core:deploy": "node buildLiveSplitCore.js --max-opt --nightly",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri": "tauri",

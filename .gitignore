@@ -110,3 +110,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# livesplit-core
+src/livesplit_core.wasm
+src/livesplit-core
