@@ -114,3 +114,5 @@ dist-ssr
 # livesplit-core
 src/livesplit_core.wasm
 src/livesplit-core
+
+*.diff
